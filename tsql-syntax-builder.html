@@ -1,0 +1,2724 @@
+<title>T-SQL Syntax Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:ital,wght@0,500;0,600;0,700;1,500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: query-console — a strip of cascading keyword columns (hover to drill in) above a two-pane workbench: syntax tree | generated script */
+:root{
+  --bg:#edf0f3; --panel:#ffffff; --sunk:#f5f7f9; --ink:#15202b; --muted:#566473; --line:#d5dce3; --line-2:#e7ecf0;
+  --accent:#1c5ccc; --accent-ink:#ffffff; --accent-soft:#e2ebfa;
+  --ph:#8f4d00; --ph-bg:#fcf0dc; --ph-line:#e9c48a;
+  --new:#0b7556; --new-bg:#dcf2e8; --pv:#7339ad; --pv-bg:#eee3f9; --old:#4b5c6d; --old-bg:#e6ebf0;
+  --k:#1b4dbf; --f:#8a3aa3; --s:#a3351b; --n:#0a7064; --c:#6b7884; --ty:#0d6b8a; --v:#8f4d00;
+  --scrim:rgba(12,18,26,.48);
+  --shadow:0 1px 2px rgba(21,32,43,.06), 0 10px 30px rgba(21,32,43,.10);
+  --sans:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --cond:"IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1319; --panel:#151c24; --sunk:#10161d; --ink:#e2e8ee; --muted:#93a1ae; --line:#27323d; --line-2:#1f2831;
+    --accent:#6aa4ff; --accent-ink:#0b1420; --accent-soft:#1c2c45;
+    --ph:#f2b25c; --ph-bg:#33260f; --ph-line:#6b4c1b;
+    --new:#5fd3a8; --new-bg:#123328; --pv:#c79cf2; --pv-bg:#2c1d40; --old:#a9b6c2; --old-bg:#222c36;
+    --k:#80b2ff; --f:#d79cf0; --s:#f1957a; --n:#5ed3bf; --c:#7d8a96; --ty:#62c6e6; --v:#f2b25c;
+    --scrim:rgba(0,0,0,.6);
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.4);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1319; --panel:#151c24; --sunk:#10161d; --ink:#e2e8ee; --muted:#93a1ae; --line:#27323d; --line-2:#1f2831;
+  --accent:#6aa4ff; --accent-ink:#0b1420; --accent-soft:#1c2c45;
+  --ph:#f2b25c; --ph-bg:#33260f; --ph-line:#6b4c1b;
+  --new:#5fd3a8; --new-bg:#123328; --pv:#c79cf2; --pv-bg:#2c1d40; --old:#a9b6c2; --old-bg:#222c36;
+  --k:#80b2ff; --f:#d79cf0; --s:#f1957a; --n:#5ed3bf; --c:#7d8a96; --ty:#62c6e6; --v:#f2b25c;
+  --scrim:rgba(0,0,0,.6);
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.4);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:14px/1.5 var(--sans)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1560px;margin:0 auto;padding-inline:20px;padding-block:22px 56px;display:grid;gap:18px}
+@media (max-width:600px){.wrap{padding-inline:16px}}
+
+/* Header */
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px 28px}
+.brand{min-width:0}
+h1{font:700 28px/1.05 var(--cond);margin:0;letter-spacing:.005em;text-wrap:balance}
+h1 .kw{font-family:var(--mono);font-weight:600;font-size:.82em;color:var(--accent);margin-right:.25em}
+.sub{color:var(--muted);margin:6px 0 0;max-width:72ch}
+.search{position:relative;flex:0 1 380px;min-width:0}
+.search input{width:100%;font:500 14px var(--sans);padding:9px 12px 9px 34px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink)}
+.search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;color:var(--muted);font-size:12.5px;align-items:center}
+
+/* Panels */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;min-width:0}
+.sec-h{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--line)}
+.sec-h h2{font:600 12px var(--cond);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:0}
+.sec-h .hint{font-size:12.5px;color:var(--muted)}
+
+/* Explorer */
+.explorer{display:grid;grid-template-columns:minmax(0,1fr) 380px}
+@media (max-width:980px){.explorer{grid-template-columns:minmax(0,1fr)}}
+.colwrap{position:relative;min-width:0;border-right:1px solid var(--line)}
+@media (max-width:980px){.colwrap{border-right:0;border-bottom:1px solid var(--line)}}
+.cols{display:flex;overflow-x:auto;height:430px;scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){.cols{scroll-behavior:auto}}
+.col{flex:0 0 244px;overflow-y:auto;border-right:1px solid var(--line-2);padding:0 6px 8px}
+.col-h{position:sticky;top:0;z-index:1;background:var(--panel);font:600 11px var(--cond);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);padding:10px 8px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.it{display:flex;align-items:center;gap:6px;padding:6px 6px 6px 9px;border-radius:6px;cursor:pointer;min-height:34px;user-select:none}
+.it:hover{background:var(--sunk)}
+.it .lbl{flex:1;min-width:0;font:500 13px/1.3 var(--mono);overflow-wrap:anywhere}
+.it.grp .lbl{font:500 13.5px/1.3 var(--cond)}
+.it.on{background:var(--accent-soft)}
+.it.cur{background:var(--accent);color:var(--accent-ink)}
+.it.cur .chev{color:var(--accent-ink)}
+.chev{color:var(--muted);font:600 14px var(--mono);width:10px;text-align:center;flex:none}
+.acts{display:none;gap:4px;flex:none}
+.it:hover .acts,.it.cur .acts,.it:focus-within .acts{display:flex}
+.mini{font:500 11.5px/1 var(--sans);padding:5px 7px;border-radius:4px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer;white-space:nowrap}
+.mini:hover{border-color:var(--accent);color:var(--accent)}
+.it.cur .mini{border-color:transparent}
+.badge{font:600 10px/1 var(--sans);letter-spacing:.03em;padding:3px 5px;border-radius:3px;white-space:nowrap;flex:none}
+.b-new{background:var(--new-bg);color:var(--new)}
+.b-pv{background:var(--pv-bg);color:var(--pv)}
+.b-old{background:var(--old-bg);color:var(--old)}
+.it.cur .badge{background:var(--panel)}
+
+.results{position:absolute;inset:0;overflow-y:auto;background:var(--panel);padding:8px;z-index:2;border-radius:10px 0 0 10px}
+.res{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;text-align:left;border:0;background:none;padding:8px 10px;border-radius:6px;cursor:pointer}
+.res:hover,.res:focus-visible{background:var(--accent-soft)}
+.res .rl{display:flex;gap:8px;align-items:center;font:500 13px var(--mono)}
+.res .rp{font-size:12px;color:var(--muted)}
+.empty-note{color:var(--muted);padding:16px}
+
+.detail{padding:16px 18px;overflow-y:auto;height:430px;display:flex;flex-direction:column;gap:12px}
+@media (max-width:980px){.detail{height:auto}}
+.crumb{font:500 12px var(--cond);color:var(--muted);letter-spacing:.02em}
+.detail h3{font:600 20px/1.2 var(--mono);margin:0;display:flex;flex-wrap:wrap;gap:8px;align-items:center;overflow-wrap:anywhere}
+.detail h3.grp{font-family:var(--cond)}
+.detail p{margin:0;max-width:62ch}
+.lab{font:600 11px var(--cond);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.syn{font:12.5px/1.6 var(--mono);background:var(--sunk);border:1px solid var(--line-2);border-radius:6px;padding:10px 12px;margin:0;overflow-x:auto;white-space:pre}
+.ph-syn{color:var(--ph);background:var(--ph-bg);border-radius:3px;padding:0 2px}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{font:500 11.5px var(--mono);border:1px solid var(--line);border-radius:4px;padding:2px 6px;background:var(--panel);cursor:pointer}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.where{font-size:12.5px;color:var(--muted)}
+
+.btn{font:500 13px/1 var(--sans);border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:6px;padding:8px 12px;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.pri{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.pri:hover{filter:brightness(1.08);color:var(--accent-ink)}
+.btn.sm{padding:5px 9px;font-size:12px}
+.btn.ghost{border-color:transparent;background:transparent}
+.btn.ghost:hover{border-color:var(--line)}
+
+/* Builder */
+.bench{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:18px;align-items:start}
+@media (max-width:1060px){.bench{grid-template-columns:minmax(0,1fr)}}
+.outline{padding:12px 14px 16px;display:grid;gap:12px}
+.tn{min-width:0}
+.tn.root{border:1px solid var(--line);border-radius:8px;padding:10px 12px 12px;background:var(--panel)}
+.tn.root.active{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.tn-kids{margin-left:6px;padding-left:12px;border-left:1px dashed var(--line);display:grid;gap:8px;margin-top:8px}
+.tn-kids:empty{display:none}
+.tn-h{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.tn-h .nm{font:600 13.5px var(--mono);margin-right:auto;display:flex;gap:6px;align-items:center;flex-wrap:wrap;min-width:0;overflow-wrap:anywhere}
+.tn-h .num{font:600 11px var(--cond);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.tn-h .btn{opacity:.85}
+.fields{display:grid;gap:6px;margin-top:6px}
+.fld{display:grid;grid-template-columns:118px minmax(0,1fr);gap:8px;align-items:start}
+@media (max-width:520px){.fld{grid-template-columns:minmax(0,1fr);gap:2px}}
+.fld-k{font:500 12px var(--cond);color:var(--muted);padding-top:6px;overflow-wrap:anywhere}
+.fld-v{width:100%;font:12.5px/1.5 var(--mono);color:var(--ink);background:var(--ph-bg);border:1px solid var(--ph-line);border-radius:5px;padding:5px 8px;resize:vertical;min-height:30px}
+.fld-v:focus{outline:2px solid var(--accent);outline-offset:0}
+.flash{animation:flash 1.1s ease-out}
+@keyframes flash{0%{background:var(--accent-soft)}100%{background:transparent}}
+@media (prefers-reduced-motion:reduce){.flash{animation:none}}
+.empty{border:1px dashed var(--line);border-radius:8px;padding:22px;color:var(--muted);text-align:center}
+
+.preview{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);display:flex;flex-direction:column;max-height:calc(100vh - 24px)}
+@media (max-width:1060px){.preview{position:static;max-height:none}}
+.code{font:12.5px/1.65 var(--mono);background:var(--sunk);margin:0;padding:14px 16px;overflow:auto;white-space:pre;tab-size:4;min-height:120px;flex:1;border-radius:0 0 10px 10px;color:var(--ink)}
+.code .ph{background:var(--ph-bg);box-shadow:inset 0 -1px 0 var(--ph-line);border-radius:2px;cursor:pointer}
+.code .ph:hover{box-shadow:inset 0 0 0 1px var(--ph)}
+.k{color:var(--k);font-weight:500}.f{color:var(--f)}.s{color:var(--s)}.n{color:var(--n)}.c{color:var(--c);font-style:italic}.ty{color:var(--ty)}.v{color:var(--v)}
+
+/* Example dialog */
+.ov{position:fixed;inset:0;background:var(--scrim);display:grid;place-items:center;padding:16px;z-index:50}
+.ov-card{width:min(1040px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);min-width:0}
+.ov-h{padding:16px 18px 12px;display:grid;gap:8px;border-bottom:1px solid var(--line)}
+.ov-h .tl{display:flex;align-items:flex-start;gap:10px}
+.ov-h h3{font:600 18px/1.25 var(--mono);margin:0;flex:1;display:flex;flex-wrap:wrap;gap:8px;align-items:center;overflow-wrap:anywhere}
+.ov-h p{margin:0;color:var(--muted);max-width:80ch}
+.note{font-size:12.5px;background:var(--pv-bg);color:var(--pv);padding:6px 10px;border-radius:6px}
+.tabs{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.tab{border:1px solid var(--line);background:var(--panel);padding:6px 10px;border-radius:6px;cursor:pointer;font:500 12.5px var(--sans)}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+.ov .code{border-radius:0 0 12px 12px;min-height:0}
+.feat{display:inline-block;min-width:100%;background:var(--accent-soft);margin:0 -16px;padding:0 16px}
+.sec{color:var(--muted)}
+
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);transform:translateX(-50%);background:var(--ink);color:var(--panel);padding:8px 14px;border-radius:8px;font-size:13px;box-shadow:var(--shadow);z-index:60;max-width:calc(100% - 32px)}
+.foot{color:var(--muted);font-size:12.5px;max-width:110ch}
+.foot code{font-family:var(--mono);font-size:12px}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <h1><span class="kw">T-SQL</span>Syntax Builder</h1>
+      <p class="sub">SQL Server 2025 syntax as a tree. Hover a keyword to open its options. <b>+ Add</b> puts that branch into your syntax tree, and <b>Example</b> opens a runnable script that creates the tables, loads sample data, then uses the feature.</p>
+    </div>
+    <div class="search">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5"/></svg>
+      <input id="q" type="search" placeholder="Find syntax: REGEXP, MERGE, OFFSET, JSON…" autocomplete="off" aria-label="Find syntax">
+    </div>
+  </header>
+
+  <section class="panel explorer" aria-label="Syntax explorer">
+    <div class="colwrap">
+      <div class="cols" id="cols" role="tree" aria-label="T-SQL syntax tree"></div>
+      <div class="results" id="results" hidden></div>
+    </div>
+    <aside class="detail" id="detail" aria-live="polite"></aside>
+  </section>
+
+  <div class="legend">
+    <span><span class="badge b-new">2025</span> new in SQL Server 2025</span>
+    <span><span class="badge b-pv">2025 preview</span> needs <code>PREVIEW_FEATURES = ON</code></span>
+    <span><span class="badge b-old">2022</span> added in SQL Server 2022</span>
+    <span>Amber fields are the values you plug in.</span>
+  </div>
+
+  <div class="bench">
+    <section class="panel" aria-label="Your syntax tree">
+      <div class="sec-h">
+        <h2>Your syntax tree</h2>
+        <div class="row">
+          <button class="btn sm ghost" id="sample">Load sample</button>
+          <button class="btn sm" id="clear">Clear tree</button>
+        </div>
+      </div>
+      <div class="outline" id="outline"></div>
+    </section>
+    <section class="panel preview" aria-label="Generated T-SQL">
+      <div class="sec-h">
+        <h2>Generated T-SQL</h2>
+        <div class="row"><span class="hint" id="stat"></span><button class="btn sm pri" id="copy">Copy script</button></div>
+      </div>
+      <pre class="code" id="script"></pre>
+    </section>
+  </div>
+
+  <p class="foot">Example scripts create a scratch database named <code>SyntaxLab</code>, set compatibility level 170, and drop and recreate only the tables they need. Preview features and their syntax can change between SQL Server 2025 builds; check the product documentation for your build before you rely on one in production.</p>
+</div>
+
+<div class="ov" id="ov" hidden>
+  <div class="ov-card" role="dialog" aria-modal="true" aria-labelledby="ovTitle">
+    <div class="ov-h">
+      <div class="tl"><h3 id="ovTitle"></h3><button class="btn sm" id="ovClose">Close</button></div>
+      <p id="ovDesc"></p>
+      <div id="ovNote"></div>
+      <div class="row" style="justify-content:space-between">
+        <div class="tabs" role="tablist">
+          <button class="tab" role="tab" id="tabFull" aria-selected="true">Full script</button>
+          <button class="tab" role="tab" id="tabFeat" aria-selected="false">Feature only</button>
+        </div>
+        <button class="btn sm pri" id="ovCopy">Copy script</button>
+      </div>
+    </div>
+    <pre class="code" id="ovCode"></pre>
+  </div>
+</div>
+<div class="toast" id="toast" hidden role="status"></div>
+
+<script>
+/* ============================================================
+   Sample schema used by every example script
+   ============================================================ */
+const TABLES = {
+Customers:{deps:[], create:
+`CREATE TABLE dbo.Customers
+(
+    CustomerID int IDENTITY(1,1) NOT NULL CONSTRAINT PK_Customers PRIMARY KEY,
+    Name       nvarchar(100) NOT NULL,
+    City       nvarchar(60)  NOT NULL,
+    Email      varchar(254)  NULL,
+    Phone      varchar(30)   NULL,
+    CreatedAt  datetime2(0)  NOT NULL CONSTRAINT DF_Customers_CreatedAt DEFAULT SYSUTCDATETIME()
+);`, data:
+`INSERT dbo.Customers (Name, City, Email, Phone, CreatedAt)
+VALUES (N'Northwind Traders',    N'Seattle',  'orders@northwind.example',   '+1 206-555-0101', '2024-01-15'),
+       (N'Contoso Pharmacy',     N'Redmond',  'buyer@contoso.example',      '425-555-0142',    '2024-03-02'),
+       (N'Fabrikam Cycles',      N'Portland', 'sales@fabrikam',             '(503) 555 0199',  '2024-06-20'),
+       (N'Adventure Works',      N'Seattle',  NULL,                         '206.555.0177',    '2025-01-08'),
+       (N'Tailspin Toys',        N'Boise',    'hello@tailspintoys.example', NULL,              '2025-05-30'),
+       (N'Wide World Importers', N'Tacoma',   'ap@wideworld.example',       '+1 253 555 0110', '2025-09-12');`},
+Products:{deps:[], create:
+`CREATE TABLE dbo.Products
+(
+    ProductID    int           NOT NULL CONSTRAINT PK_Products PRIMARY KEY,
+    Name         nvarchar(100) NOT NULL,
+    Category     nvarchar(40)  NOT NULL,
+    Price        decimal(10,2) NOT NULL,
+    Discontinued bit           NOT NULL CONSTRAINT DF_Products_Discontinued DEFAULT 0
+);`, data:
+`INSERT dbo.Products (ProductID, Name, Category, Price)
+VALUES (1, N'Trail Helmet',       N'Safety',        59.00),
+       (2, N'Road Bike 54cm',     N'Bikes',       1249.00),
+       (3, N'Water Bottle 750ml', N'Accessories',    9.50),
+       (4, N'LED Light Set',      N'Accessories',   34.95),
+       (5, N'Gravel Bike 56cm',   N'Bikes',       1689.00),
+       (6, N'Knee Pads',          N'Safety',        27.00);`},
+Orders:{deps:['Customers'], create:
+`CREATE TABLE dbo.Orders
+(
+    OrderID    int         NOT NULL CONSTRAINT PK_Orders PRIMARY KEY,
+    CustomerID int         NOT NULL CONSTRAINT FK_Orders_Customers REFERENCES dbo.Customers (CustomerID),
+    OrderDate  date        NOT NULL,
+    Status     varchar(20) NOT NULL
+);`, data:
+`INSERT dbo.Orders (OrderID, CustomerID, OrderDate, Status)
+VALUES (1001, 1, '2025-01-12', 'Shipped'),
+       (1002, 2, '2025-02-03', 'Shipped'),
+       (1003, 1, '2025-02-18', 'Pending'),
+       (1004, 3, '2025-03-07', 'Shipped'),
+       (1005, 4, '2025-04-21', 'Cancelled'),
+       (1006, 2, '2025-05-09', 'Shipped'),
+       (1007, 6, '2025-06-30', 'Pending'),
+       (1008, 1, '2025-07-14', 'Shipped');`},
+OrderLines:{deps:['Orders','Products'], create:
+`CREATE TABLE dbo.OrderLines
+(
+    OrderID    int           NOT NULL CONSTRAINT FK_OrderLines_Orders REFERENCES dbo.Orders (OrderID),
+    LineNumber int           NOT NULL,
+    ProductID  int           NOT NULL CONSTRAINT FK_OrderLines_Products REFERENCES dbo.Products (ProductID),
+    Qty        int           NOT NULL,
+    UnitPrice  decimal(10,2) NOT NULL,
+    CONSTRAINT PK_OrderLines PRIMARY KEY (OrderID, LineNumber)
+);`, data:
+`INSERT dbo.OrderLines (OrderID, LineNumber, ProductID, Qty, UnitPrice)
+VALUES (1001, 1, 2,  1, 1249.00), (1001, 2, 1,  1,   59.00),
+       (1002, 1, 3, 24,    9.50),
+       (1003, 1, 4,  5,   34.95),
+       (1004, 1, 5,  2, 1689.00), (1004, 2, 6,  2,   27.00),
+       (1005, 1, 3, 10,    9.50),
+       (1006, 1, 1,  6,   59.00), (1006, 2, 4,  6,   34.95),
+       (1007, 1, 2,  1, 1249.00),
+       (1008, 1, 3, 12,    9.50);`},
+Employees:{deps:[], create:
+`CREATE TABLE dbo.Employees
+(
+    EmployeeID int           NOT NULL CONSTRAINT PK_Employees PRIMARY KEY,
+    Name       nvarchar(100) NOT NULL,
+    ManagerID  int           NULL CONSTRAINT FK_Employees_Manager REFERENCES dbo.Employees (EmployeeID),
+    Dept       nvarchar(40)  NOT NULL,
+    Salary     decimal(10,2) NOT NULL,
+    HireDate   date          NOT NULL
+);`, data:
+`INSERT dbo.Employees (EmployeeID, Name, ManagerID, Dept, Salary, HireDate)
+VALUES (1, N'Ava Patel',     NULL, N'Executive',   210000, '2015-04-01'),
+       (2, N'Ben Okafor',    1,    N'Engineering', 165000, '2017-09-15'),
+       (3, N'Chloé Martin',  1,    N'Sales',       150000, '2018-01-08'),
+       (4, N'Dan Kowalski',  2,    N'Engineering', 128000, '2019-06-03'),
+       (5, N'Eve Nakamura',  2,    N'Engineering', 131000, '2021-02-22'),
+       (6, N'Farah Haddad',  3,    N'Sales',        97000, '2020-11-30'),
+       (7, N'Gus Lindqvist', 3,    N'Sales',        97000, '2023-05-15'),
+       (8, N'Hana Kim',      4,    N'Engineering', 104000, '2024-08-19');`},
+ProductStaging:{deps:[], create:
+`CREATE TABLE dbo.ProductStaging
+(
+    ProductID int           NOT NULL CONSTRAINT PK_ProductStaging PRIMARY KEY,
+    Name      nvarchar(100) NOT NULL,
+    Category  nvarchar(40)  NOT NULL,
+    Price     decimal(10,2) NOT NULL
+);`, data:
+`-- 1 = price change, 3 = unchanged, 7 and 8 = new products; 2, 4, 5, 6 are missing from the feed
+INSERT dbo.ProductStaging (ProductID, Name, Category, Price)
+VALUES (1, N'Trail Helmet',       N'Safety',      64.00),
+       (3, N'Water Bottle 750ml', N'Accessories',  9.50),
+       (7, N'Bike Pump',          N'Accessories', 24.00),
+       (8, N'Cycling Gloves',     N'Safety',      19.99);`},
+Tickets:{deps:[], create:
+`CREATE TABLE dbo.Tickets
+(
+    TicketID   int           NOT NULL CONSTRAINT PK_Tickets PRIMARY KEY,
+    CustomerID int           NULL,
+    Subject    nvarchar(200) NOT NULL,
+    Body       nvarchar(max) NOT NULL,
+    Details    json          NOT NULL      -- native json type (SQL Server 2025)
+);`, data:
+`INSERT dbo.Tickets (TicketID, CustomerID, Subject, Body, Details)
+VALUES (1, 1, N'Order 1003 arrived damaged',
+           N'Box was crushed in transit. Reach me at orders@northwind.example or 206-555-0101.',
+           '{"priority":"high","channel":"email","tags":["shipping","damage"],"order":1003}'),
+       (2, 6, N'Invoice question INV-2025-0042',
+           N'Please resend invoice INV-2025-0042 to ap@wideworld.example. Thanks!',
+           '{"priority":"low","channel":"web","tags":["billing"],"order":1007}'),
+       (3, 1, N'Helmet size exchange',
+           N'Need size M instead of L for order 1008. Call 206.555.0177 after 3pm.',
+           '{"priority":"medium","channel":"phone","tags":["exchange","sizing"],"order":1008}'),
+       (4, 5, N'Rode bike question',
+           N'Does the rode bike 54cm ship assembled? Is a trial helmet included?',
+           '{"priority":"low","channel":"chat","tags":["presales"],"order":null}');`},
+Articles:{deps:[], create:
+`CREATE TABLE dbo.Articles
+(
+    ArticleID int           NOT NULL CONSTRAINT PK_Articles PRIMARY KEY CLUSTERED,
+    Title     nvarchar(200) NOT NULL,
+    Embedding vector(3)     NOT NULL       -- native vector type (SQL Server 2025)
+);`, data:
+`-- Tiny 3-dimension embeddings: [bikes, safety, comfort]
+INSERT dbo.Articles (ArticleID, Title, Embedding)
+VALUES (1, N'Choosing a road bike',                '[0.91, 0.12, 0.05]'),
+       (2, N'Helmet safety standards explained',   '[0.10, 0.88, 0.15]'),
+       (3, N'Gravel vs road: which bike?',         '[0.85, 0.20, 0.10]'),
+       (4, N'Hydration on long rides',             '[0.15, 0.25, 0.90]'),
+       (5, N'Night riding: lights and visibility', '[0.20, 0.70, 0.40]');`},
+AuditLog:{deps:[], create:
+`CREATE TABLE dbo.AuditLog
+(
+    LogID     int IDENTITY(1,1) NOT NULL CONSTRAINT PK_AuditLog PRIMARY KEY,
+    TableName sysname       NOT NULL,
+    Operation varchar(10)   NOT NULL,
+    KeyValue  nvarchar(100) NULL,
+    Detail    nvarchar(400) NULL,
+    LoggedAt  datetime2(3)  NOT NULL CONSTRAINT DF_AuditLog_LoggedAt DEFAULT SYSUTCDATETIME()
+);`, data:''}
+};
+const TABLE_ORDER = ['Customers','Products','Orders','OrderLines','Employees','ProductStaging','Tickets','Articles','AuditLog'];
+/* Objects some examples create that would block dropping the lab tables on a rerun */
+const BLOCKERS = ['DROP VIEW  IF EXISTS dbo.vCustomerOrders;','DROP TABLE IF EXISTS dbo.Invoices;'];
+
+const X = (tb, q, o) => Object.assign({tb, q}, o || {});
+
+/* ============================================================
+   Built-in function library (reused in several places of the tree)
+   k: s = scalar, agg = aggregate, win = window, pred = predicate, tvf = table-valued
+   ============================================================ */
+const FUZZY_EX = X(['Products'],
+`DECLARE @typed nvarchar(100) = N'Rode Bike 54cm';   -- what a user typed
+
+SELECT p.Name,
+       EDIT_DISTANCE(p.Name, @typed)            AS Edits,
+       EDIT_DISTANCE_SIMILARITY(p.Name, @typed) AS EditSimilarity,   -- 0-100
+       JARO_WINKLER_DISTANCE(p.Name, @typed)    AS JwDistance,       -- 0.0-1.0, lower is closer
+       JARO_WINKLER_SIMILARITY(p.Name, @typed)  AS JwSimilarity      -- 0-100
+FROM dbo.Products AS p
+ORDER BY Edits;
+
+-- Typical use: accept close matches only
+SELECT p.Name
+FROM dbo.Products AS p
+WHERE EDIT_DISTANCE_SIMILARITY(p.Name, @typed) >= 80;`);
+
+const FCATS = [
+{id:'str', l:'String', d:'Text manipulation functions.', f:[
+  {id:'concatws', l:'CONCAT_WS', k:'s', d:'Joins values with a separator and skips NULL values.', src:'dbo.Customers AS c',
+   x:"CONCAT_WS(«separator=N' · '», «values=c.Name, c.City, c.Email») AS «alias=Summary»",
+   ex:X(['Customers'],`SELECT c.Name,
+       CONCAT_WS(N' · ', c.Name, c.City, c.Email) AS Summary   -- a NULL Email is skipped
+FROM dbo.Customers AS c;`)},
+  {id:'pipes', l:'|| (concatenate)', v:'2025', k:'s', d:'ANSI string concatenation operator, new in SQL Server 2025. Like +, a NULL operand makes the result NULL. The compound form ||= appends to a variable or column.', src:'dbo.Customers AS c',
+   x:"«left=c.Name» || N' (' || «right=c.City» || N')' AS «alias=Label»",
+   ex:X(['Customers'],`SELECT c.Name || N' (' || c.City || N')'  AS Label,
+       c.Name || N' <' || c.Email || N'>' AS Contact     -- NULL when Email is NULL
+FROM dbo.Customers AS c;
+
+-- Compound assignment, also new in 2025
+DECLARE @msg nvarchar(200) = N'Report run';
+SET @msg ||= N' on ' || CONVERT(nvarchar(10), CURRENT_DATE, 23);
+SELECT @msg AS Message;`)},
+  {id:'substring', l:'SUBSTRING (length optional)', v:'2025', k:'s', d:'SQL Server 2025 makes the length argument optional. Leave it out to return everything from the start position to the end.', src:'dbo.Customers AS c',
+   x:"SUBSTRING(«input=c.Email», «start=CHARINDEX('@', c.Email) + 1») AS «alias=Domain»",
+   ex:X(['Customers'],`SELECT c.Email,
+       SUBSTRING(c.Email, CHARINDEX('@', c.Email) + 1)    AS Domain,      -- no length argument
+       SUBSTRING(c.Email, 1, CHARINDEX('@', c.Email) - 1) AS Mailbox      -- classic three-argument form
+FROM dbo.Customers AS c
+WHERE c.Email IS NOT NULL;`)},
+  {id:'unistr', l:'UNISTR', v:'2025', k:'s', d:'Builds a Unicode string from escape sequences: \\XXXX for UTF-16 code points and \\+XXXXXX for any code point. An optional second argument changes the escape character.',
+   x:"UNISTR(«literal=N'Caf\\00E9 in Z\\00FCrich'») AS «alias=Decoded»",
+   ex:X([],`SELECT UNISTR(N'Caf\\00E9 in Z\\00FCrich') AS Decoded,
+       UNISTR(N'Price: 42 \\+0020AC')     AS WithEuroSign,
+       UNISTR(N'Caf$00E9', N'$')         AS CustomEscapeChar;`)},
+  {id:'trim', l:'TRIM / LTRIM (characters)', v:'2022', k:'s', d:'Removes a set of characters (not only spaces) from either or both ends of a string.', src:'dbo.Customers AS c',
+   x:"TRIM(«characters='()+ '» FROM «input=c.Phone») AS «alias=Trimmed»",
+   ex:X(['Customers'],`SELECT c.Phone,
+       TRIM('()+ ' FROM c.Phone) AS Trimmed,
+       LTRIM(c.Phone, '+1 ')     AS NoCountryCode,
+       RTRIM(c.Phone, '0123456789') AS WithoutTrailingDigits
+FROM dbo.Customers AS c
+WHERE c.Phone IS NOT NULL;`)},
+  {id:'translate', l:'TRANSLATE', k:'s', d:'Replaces each character in the first list with the character in the same position of the second list. Both lists must be the same length.', src:'dbo.Customers AS c',
+   x:"TRANSLATE(«input=c.Phone», «from_chars='().-'», «to_chars='    '») AS «alias=Spaced»",
+   ex:X(['Customers'],`SELECT c.Phone,
+       TRANSLATE(c.Phone, '().-', '    ')                     AS Spaced,
+       REPLACE(TRANSLATE(c.Phone, '().-+', '     '), ' ', '') AS DigitsOnly
+FROM dbo.Customers AS c
+WHERE c.Phone IS NOT NULL;`)},
+  {id:'replace', l:'REPLACE', k:'s', d:'Replaces every occurrence of a substring.', src:'dbo.Customers AS c',
+   x:"REPLACE(«input=c.Name», «find=N' '», «replace_with=N'-'») AS «alias=Slug»",
+   ex:X(['Customers'],`SELECT c.Name,
+       LOWER(REPLACE(c.Name, N' ', N'-')) AS Slug
+FROM dbo.Customers AS c;`)},
+  {id:'patindex', l:'PATINDEX / CHARINDEX', k:'s', d:'Return the 1-based position of a LIKE pattern (PATINDEX) or a literal substring (CHARINDEX), or 0 when there is no match.', src:'dbo.Customers AS c',
+   x:"PATINDEX(«pattern='%[0-9]%'», «input=c.Phone») AS «alias=FirstDigitAt»",
+   ex:X(['Customers'],`SELECT c.Email, c.Phone,
+       CHARINDEX('@', c.Email)       AS AtSignAt,
+       PATINDEX('%[0-9]%', c.Phone)  AS FirstDigitAt
+FROM dbo.Customers AS c;`)},
+  {id:'format', l:'FORMAT', k:'s', d:'Formats a date or number with a .NET format string and an optional culture. Convenient, but slower than CONVERT on large sets.', src:'dbo.Orders AS o',
+   x:"FORMAT(«value=o.OrderDate», «format='dd MMM yyyy'», «culture='en-GB'») AS «alias=Formatted»",
+   ex:X(['Orders'],`SELECT o.OrderID,
+       FORMAT(o.OrderDate, 'dd MMM yyyy', 'en-GB') AS UkDate,
+       FORMAT(o.OrderDate, 'D', 'de-DE')           AS GermanLongDate
+FROM dbo.Orders AS o;`)},
+  {id:'stringsplit', l:'STRING_SPLIT (with ordinal)', v:'2022', k:'tvf', d:'Splits a string into rows. Pass 1 as the third argument to get an ordinal column with each piece\'s position.',
+   x:"STRING_SPLIT(«input=N'Bikes,Safety,Accessories'», «separator=','», «enable_ordinal=1») AS «alias=s»",
+   ex:X([],`SELECT s.value AS Category, s.ordinal
+FROM STRING_SPLIT(N'Bikes,Safety,Accessories', ',', 1) AS s
+ORDER BY s.ordinal;`)}
+]},
+{id:'rx', l:'Regular expressions', v:'2025', d:'POSIX-style regular expressions built into the engine, new in SQL Server 2025. Some need database compatibility level 170.', f:[
+  {id:'regexplike', l:'REGEXP_LIKE', v:'2025', k:'pred', d:'Returns TRUE when the input matches the pattern. It is a predicate, so use it in WHERE, CHECK constraints or CASE WHEN. Flags: i = case-insensitive, c = case-sensitive, m = multi-line, s = dot matches newline. Needs compatibility level 170.', src:'dbo.Customers AS c', cols:'c.Name, c.Email',
+   x:"REGEXP_LIKE(«input=c.Email», «pattern='^[^@\\s]+@[^@\\s]+\\.[a-z]{2,}$'», «flags='i'»)",
+   ex:X(['Customers'],`-- Rows whose email looks valid
+SELECT c.Name, c.Email
+FROM dbo.Customers AS c
+WHERE REGEXP_LIKE(c.Email, '^[^@\\s]+@[^@\\s]+\\.[a-z]{2,}$', 'i');
+
+-- Flag every row instead of filtering
+SELECT c.Name, c.Email,
+       CASE WHEN REGEXP_LIKE(c.Email, '^[^@\\s]+@[^@\\s]+\\.[a-z]{2,}$', 'i')
+            THEN 1 ELSE 0 END AS LooksValid
+FROM dbo.Customers AS c;`)},
+  {id:'regexpreplace', l:'REGEXP_REPLACE', v:'2025', k:'s', d:'Replaces matches of a pattern. Arguments: input, pattern, replacement, start position, occurrence (0 = all), flags. Use \\1, \\2 in the replacement for captured groups.', src:'dbo.Customers AS c',
+   x:"REGEXP_REPLACE(«input=c.Phone», «pattern='[^0-9]'», «replacement=''») AS «alias=DigitsOnly»",
+   ex:X(['Customers'],`SELECT c.Phone,
+       REGEXP_REPLACE(c.Phone, '[^0-9]', '')               AS DigitsOnly,
+       REGEXP_REPLACE(c.Email, '^(.).*(@.*)$', '\\1***\\2')  AS MaskedEmail
+FROM dbo.Customers AS c;`)},
+  {id:'regexpsubstr', l:'REGEXP_SUBSTR', v:'2025', k:'s', d:'Returns the text of a match. Arguments: input, pattern, start, occurrence, flags, and the capture group to return.', src:'dbo.Tickets AS t',
+   x:"REGEXP_SUBSTR(«input=t.Body», «pattern='[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[a-z]{2,}'», «start=1», «occurrence=1», «flags='i'») AS «alias=FirstEmail»",
+   ex:X(['Tickets'],`SELECT t.TicketID,
+       REGEXP_SUBSTR(t.Body, '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[a-z]{2,}', 1, 1, 'i') AS FirstEmail,
+       REGEXP_SUBSTR(t.Subject, 'INV-(\\d{4})-(\\d+)', 1, 1, 'c', 2)                AS InvoiceNumber
+FROM dbo.Tickets AS t;`)},
+  {id:'regexpinstr', l:'REGEXP_INSTR', v:'2025', k:'s', d:'Returns the position of a match. Arguments: input, pattern, start, occurrence, return option (0 = start of match, 1 = position after it), flags, group.', src:'dbo.Tickets AS t',
+   x:"REGEXP_INSTR(«input=t.Body», «pattern='\\d{3}[-. ]\\d{3}[-. ]\\d{4}'») AS «alias=PhoneAt»",
+   ex:X(['Tickets'],`SELECT t.TicketID,
+       REGEXP_INSTR(t.Body, '\\d{3}[-. ]\\d{3}[-. ]\\d{4}')          AS PhoneStartsAt,
+       REGEXP_INSTR(t.Body, '\\d{3}[-. ]\\d{3}[-. ]\\d{4}', 1, 1, 1) AS PhoneEndsBefore
+FROM dbo.Tickets AS t;`)},
+  {id:'regexpcount', l:'REGEXP_COUNT', v:'2025', k:'s', d:'Counts how many times a pattern matches. Arguments: input, pattern, start, flags.', src:'dbo.Tickets AS t',
+   x:"REGEXP_COUNT(«input=t.Body», «pattern='\\b\\d{4}\\b'») AS «alias=FourDigitNumbers»",
+   ex:X(['Tickets'],`SELECT t.TicketID, t.Body,
+       REGEXP_COUNT(t.Body, '\\b\\d{4}\\b')  AS FourDigitNumbers,
+       REGEXP_COUNT(t.Body, 'bike', 1, 'i') AS BikeMentions
+FROM dbo.Tickets AS t;`)},
+  {id:'regexpmatches', l:'REGEXP_MATCHES', v:'2025', k:'tvf', d:'Table-valued: one row per match, with match_id, start_position, end_position, match_value and substring_matches (JSON of captured groups).', src:'dbo.Tickets AS t',
+   x:"REGEXP_MATCHES(«input=t.Body», «pattern='\\d{3,4}'») AS «alias=m»",
+   ex:X(['Tickets'],`SELECT t.TicketID, m.match_id, m.match_value, m.start_position
+FROM dbo.Tickets AS t
+CROSS APPLY REGEXP_MATCHES(t.Body, '\\d{3,4}') AS m
+ORDER BY t.TicketID, m.match_id;`)},
+  {id:'regexpsplit', l:'REGEXP_SPLIT_TO_TABLE', v:'2025', k:'tvf', d:'Table-valued: splits a string on a pattern and returns value and ordinal columns.', src:'dbo.Tickets AS t',
+   x:"REGEXP_SPLIT_TO_TABLE(«input=t.Body», «pattern='[.!?]\\s*'») AS «alias=parts»",
+   ex:X(['Tickets'],`SELECT t.TicketID, parts.ordinal, parts.value AS Sentence
+FROM dbo.Tickets AS t
+CROSS APPLY REGEXP_SPLIT_TO_TABLE(t.Body, '[.!?]\\s*') AS parts
+WHERE parts.value <> N''
+ORDER BY t.TicketID, parts.ordinal;`)}
+]},
+{id:'json', l:'JSON', d:'Query, build and aggregate JSON. SQL Server 2025 adds a native json data type and JSON aggregates.', f:[
+  {id:'jsonvalue', l:'JSON_VALUE', k:'s', d:'Extracts a scalar value from JSON by path.', src:'dbo.Tickets AS t',
+   x:"JSON_VALUE(«json=t.Details», «path='$.priority'») AS «alias=Priority»",
+   ex:X(['Tickets'],`SELECT t.TicketID,
+       JSON_VALUE(t.Details, '$.priority') AS Priority,
+       JSON_VALUE(t.Details, '$.tags[0]')  AS FirstTag
+FROM dbo.Tickets AS t;`)},
+  {id:'jsonquery', l:'JSON_QUERY … WITH ARRAY WRAPPER', v:'2025', k:'s', d:'Extracts an object or array. SQL Server 2025 adds array wildcards such as $.tags[*] together with WITH ARRAY WRAPPER.', src:'dbo.Tickets AS t',
+   x:"JSON_QUERY(«json=t.Details», «path='$.tags[*]'» WITH ARRAY WRAPPER) AS «alias=Tags»",
+   ex:X(['Tickets'],`SELECT t.TicketID,
+       JSON_QUERY(t.Details, '$.tags')                        AS TagsArray,
+       JSON_QUERY(t.Details, '$.tags[*]' WITH ARRAY WRAPPER)  AS TagsViaWildcard
+FROM dbo.Tickets AS t;`)},
+  {id:'jsonobject', l:'JSON_OBJECT', v:'2022', k:'s', d:'Builds a JSON object from key:value pairs. End with ABSENT ON NULL to leave out NULL values.', src:'dbo.Customers AS c',
+   x:"JSON_OBJECT(«pairs='id': c.CustomerID, 'name': c.Name, 'city': c.City») AS «alias=CustomerJson»",
+   ex:X(['Customers'],`SELECT JSON_OBJECT('id': c.CustomerID, 'name': c.Name, 'city': c.City,
+                   'email': c.Email ABSENT ON NULL) AS CustomerJson
+FROM dbo.Customers AS c;`)},
+  {id:'jsonarray', l:'JSON_ARRAY', v:'2022', k:'s', d:'Builds a JSON array from values. NULL ON NULL keeps NULL values as null.', src:'dbo.Customers AS c',
+   x:"JSON_ARRAY(«values=c.Name, c.City, c.Email» NULL ON NULL) AS «alias=AsArray»",
+   ex:X(['Customers'],`SELECT c.CustomerID,
+       JSON_ARRAY(c.Name, c.City, c.Email NULL ON NULL) AS AsArray
+FROM dbo.Customers AS c;`)},
+  {id:'jsonobjectagg', l:'JSON_OBJECTAGG', v:'2025', k:'agg', d:'Aggregate: builds one JSON object from key : value pairs across rows.', src:'dbo.Customers AS c',
+   x:"JSON_OBJECTAGG(«key=c.Name» : «value=c.City») AS «alias=CityByCustomer»",
+   ex:X(['Customers'],`-- One object for the whole table: customer name -> city
+SELECT JSON_OBJECTAGG(c.Name : c.City) AS CityByCustomer
+FROM dbo.Customers AS c;
+
+-- One object per group
+SELECT c.City, JSON_OBJECTAGG(c.Name : c.CustomerID) AS CustomersInCity
+FROM dbo.Customers AS c
+GROUP BY c.City;`)},
+  {id:'jsonarrayagg', l:'JSON_ARRAYAGG', v:'2025', k:'agg', d:'Aggregate: builds a JSON array from values across rows, with an optional ORDER BY.', src:'dbo.Orders AS o', tail:'\nGROUP BY «group_by=o.CustomerID»',
+   x:"JSON_ARRAYAGG(«value=o.OrderID» ORDER BY «order_by=o.OrderDate») AS «alias=OrderIds»",
+   ex:X(['Orders'],`SELECT c.Name,
+       JSON_ARRAYAGG(o.OrderID ORDER BY o.OrderDate) AS OrderIds
+FROM dbo.Customers AS c
+INNER JOIN dbo.Orders AS o ON o.CustomerID = c.CustomerID
+GROUP BY c.Name;`)},
+  {id:'jsoncontains', l:'JSON_CONTAINS', v:'2025p', k:'pred', d:'Returns 1 when a JSON document contains a value, optionally at a path. Preview in SQL Server 2025.', src:'dbo.Tickets AS t', cols:'t.TicketID, t.Subject',
+   x:"JSON_CONTAINS(«json=t.Details», «value='shipping'», «path='$.tags[*]'») = 1",
+   ex:X(['Tickets'],`SELECT t.TicketID, t.Subject
+FROM dbo.Tickets AS t
+WHERE JSON_CONTAINS(t.Details, 'shipping', '$.tags[*]') = 1;`)},
+  {id:'jsonpathexists', l:'JSON_PATH_EXISTS', v:'2022', k:'pred', d:'Returns 1 when the path exists in the document, even if its value is null.', src:'dbo.Tickets AS t', cols:'t.TicketID, t.Subject',
+   x:"JSON_PATH_EXISTS(«json=t.Details», «path='$.tags[1]'») = 1",
+   ex:X(['Tickets'],`-- Tickets with at least two tags
+SELECT t.TicketID, t.Subject
+FROM dbo.Tickets AS t
+WHERE JSON_PATH_EXISTS(t.Details, '$.tags[1]') = 1;`)},
+  {id:'jsonmodify', l:'JSON_MODIFY', k:'s', d:'Returns the JSON with one property changed, added (append $.path) or removed (set to NULL).', src:'dbo.Tickets AS t',
+   x:"JSON_MODIFY(«json=t.Details», «path='$.priority'», «new_value='urgent'») AS «alias=Escalated»",
+   ex:X(['Tickets'],`SELECT t.TicketID,
+       JSON_MODIFY(t.Details, '$.priority', 'urgent') AS Escalated
+FROM dbo.Tickets AS t
+WHERE JSON_VALUE(t.Details, '$.priority') = 'high';
+
+UPDATE dbo.Tickets
+SET Details = JSON_MODIFY(Details, 'append $.tags', 'reviewed')
+WHERE TicketID = 1;
+
+SELECT Details FROM dbo.Tickets WHERE TicketID = 1;`)},
+  {id:'openjson', l:'OPENJSON', k:'tvf', d:'Table-valued: shreds a JSON object or array into key, value and type rows.', src:'dbo.Tickets AS t',
+   x:"OPENJSON(«json=t.Details», «path='$.tags'») AS «alias=j»",
+   ex:X(['Tickets'],`SELECT t.TicketID, j.[key] AS Position, j.[value] AS Tag
+FROM dbo.Tickets AS t
+CROSS APPLY OPENJSON(t.Details, '$.tags') AS j;`)},
+  {id:'openjsonwith', l:'OPENJSON … WITH (schema)', k:'tvf', d:'Table-valued: shreds JSON into typed columns that you name and map to paths.', src:'dbo.Tickets AS t',
+   x:"OPENJSON(«json=t.Details»)\n    WITH («schema=Priority varchar(10) '$.priority',\n          Channel  varchar(10) '$.channel',\n          OrderID  int         '$.order'») AS «alias=d»",
+   ex:X(['Tickets'],`SELECT t.TicketID, d.Priority, d.Channel, d.OrderID
+FROM dbo.Tickets AS t
+CROSS APPLY OPENJSON(t.Details)
+     WITH (Priority varchar(10) '$.priority',
+           Channel  varchar(10) '$.channel',
+           OrderID  int         '$.order') AS d;`)}
+]},
+{id:'dt', l:'Date & time', d:'Date arithmetic, truncation and bucketing.', f:[
+  {id:'currentdate', l:'CURRENT_DATE', v:'2025', k:'s', d:'ANSI function that returns today\'s date as date, new in SQL Server 2025. Write it without parentheses.',
+   x:"CURRENT_DATE AS «alias=Today»",
+   ex:X(['Orders'],`SELECT CURRENT_DATE AS Today;
+
+SELECT o.OrderID, o.OrderDate,
+       DATEDIFF(day, o.OrderDate, CURRENT_DATE) AS DaysAgo
+FROM dbo.Orders AS o
+WHERE o.OrderDate >= DATEADD(year, -2, CURRENT_DATE);`)},
+  {id:'datetrunc', l:'DATETRUNC', v:'2022', k:'s', d:'Truncates a date or time to the start of the given part: year, quarter, month, week, day, hour and so on.', src:'dbo.Orders AS o',
+   x:"DATETRUNC(«part=month», «date=o.OrderDate») AS «alias=OrderMonth»",
+   ex:X(['Orders'],`SELECT DATETRUNC(month, o.OrderDate) AS OrderMonth, COUNT(*) AS Orders
+FROM dbo.Orders AS o
+GROUP BY DATETRUNC(month, o.OrderDate)
+ORDER BY OrderMonth;`)},
+  {id:'datebucket', l:'DATE_BUCKET', v:'2022', k:'s', d:'Returns the start of the fixed-width bucket a date falls in, for example two-week or quarter buckets.', src:'dbo.Orders AS o',
+   x:"DATE_BUCKET(«part=week», «width=2», «date=o.OrderDate») AS «alias=Fortnight»",
+   ex:X(['Orders'],`SELECT DATE_BUCKET(quarter, 1, o.OrderDate) AS QuarterStart, COUNT(*) AS Orders
+FROM dbo.Orders AS o
+GROUP BY DATE_BUCKET(quarter, 1, o.OrderDate)
+ORDER BY QuarterStart;`)},
+  {id:'dateadd', l:'DATEADD', k:'s', d:'Adds an interval to a date. In SQL Server 2025 the number argument can be bigint.', src:'dbo.Orders AS o',
+   x:"DATEADD(«part=day», «number=30», «date=o.OrderDate») AS «alias=PaymentDue»",
+   ex:X(['Orders'],`SELECT o.OrderID, o.OrderDate,
+       DATEADD(day, 30, o.OrderDate)  AS PaymentDue,
+       DATEADD(month, 1, o.OrderDate) AS FollowUp
+FROM dbo.Orders AS o;
+
+-- SQL Server 2025: bigint number argument
+SELECT DATEADD(millisecond, CAST(3000000000 AS bigint), CAST('2025-01-01' AS datetime2)) AS PlusThreeBillionMs;`)},
+  {id:'datediff', l:'DATEDIFF', k:'s', d:'Counts the boundaries of a date part crossed between two dates.', src:'dbo.Employees AS e',
+   x:"DATEDIFF(«part=year», «start=e.HireDate», «end=CURRENT_DATE») AS «alias=YearsEmployed»",
+   ex:X(['Employees'],`SELECT e.Name, e.HireDate,
+       DATEDIFF(year, e.HireDate, CURRENT_DATE) AS YearsEmployed
+FROM dbo.Employees AS e
+ORDER BY e.HireDate;`)},
+  {id:'eomonth', l:'EOMONTH', k:'s', d:'Returns the last day of the month, with an optional month offset.', src:'dbo.Orders AS o',
+   x:"EOMONTH(«date=o.OrderDate») AS «alias=MonthEnd»",
+   ex:X(['Orders'],`SELECT o.OrderID, o.OrderDate,
+       EOMONTH(o.OrderDate)    AS MonthEnd,
+       EOMONTH(o.OrderDate, 1) AS NextMonthEnd
+FROM dbo.Orders AS o;`)},
+  {id:'datefromparts', l:'DATEFROMPARTS', k:'s', d:'Builds a date from year, month and day numbers.',
+   x:"DATEFROMPARTS(«year=2025», «month=12», «day=31») AS «alias=YearEnd»",
+   ex:X([],`SELECT DATEFROMPARTS(2025, 12, 31)                       AS YearEnd,
+       DATETIME2FROMPARTS(2025, 12, 31, 23, 59, 59, 0, 0) AS LastSecond;`)},
+  {id:'attimezone', l:'AT TIME ZONE', k:'s', d:'Attaches or converts a time zone offset using Windows time zone names.', src:'dbo.Customers AS c',
+   x:"«value=c.CreatedAt» AT TIME ZONE 'UTC' AT TIME ZONE «zone='Pacific Standard Time'» AS «alias=CreatedLocal»",
+   ex:X(['Customers'],`SELECT c.Name, c.CreatedAt AS CreatedUtc,
+       c.CreatedAt AT TIME ZONE 'UTC' AT TIME ZONE 'Pacific Standard Time' AS CreatedPacific
+FROM dbo.Customers AS c;`)}
+]},
+{id:'ml', l:'Math & logic', d:'Comparisons, conditionals and number helpers.', f:[
+  {id:'greatest', l:'GREATEST / LEAST', v:'2022', k:'s', d:'Return the largest or smallest value from a list of expressions.', src:'dbo.Products AS p',
+   x:"GREATEST(«values=p.Price, 50.00») AS «alias=AtLeast50»",
+   ex:X(['Products'],`SELECT p.Name, p.Price,
+       GREATEST(p.Price, 50.00) AS AtLeast50,
+       LEAST(p.Price, 100.00)   AS CappedAt100
+FROM dbo.Products AS p;`)},
+  {id:'iif', l:'IIF', k:'s', d:'Shorthand for a two-branch CASE expression.', src:'dbo.Products AS p',
+   x:"IIF(«condition=p.Price > 100», «true_value=N'Premium'», «false_value=N'Standard'») AS «alias=Tier»",
+   ex:X(['Products'],`SELECT p.Name, p.Price,
+       IIF(p.Price > 100, N'Premium', N'Standard') AS Tier
+FROM dbo.Products AS p;`)},
+  {id:'coalesce', l:'COALESCE', k:'s', d:'Returns the first non-NULL value in the list.', src:'dbo.Customers AS c',
+   x:"COALESCE(«values=c.Email, c.Phone, '(no contact)'») AS «alias=Contact»",
+   ex:X(['Customers'],`SELECT c.Name,
+       COALESCE(c.Email, c.Phone, '(no contact)') AS Contact
+FROM dbo.Customers AS c;`)},
+  {id:'nullif', l:'NULLIF', k:'s', d:'Returns NULL when both arguments are equal. Often used to avoid divide-by-zero errors.', src:'dbo.Orders AS o',
+   x:"NULLIF(«value=o.Status», «null_when='Cancelled'») AS «alias=ActiveStatus»",
+   ex:X(['Orders'],`SELECT o.OrderID, o.Status,
+       NULLIF(o.Status, 'Cancelled') AS ActiveStatus
+FROM dbo.Orders AS o;
+
+SELECT 100 / NULLIF(0, 0) AS SafeDivide;   -- NULL instead of an error`)},
+  {id:'round', l:'ROUND / CEILING / FLOOR', k:'s', d:'Round to a number of decimal places, or up or down to an integer.', src:'dbo.Products AS p',
+   x:"ROUND(«value=p.Price * 1.0825», «digits=2») AS «alias=PriceWithTax»",
+   ex:X(['Products'],`SELECT p.Name,
+       p.Price * 1.0825           AS Raw,
+       ROUND(p.Price * 1.0825, 2) AS Rounded,
+       CEILING(p.Price)           AS RoundedUp,
+       FLOOR(p.Price)             AS RoundedDown
+FROM dbo.Products AS p;`)},
+  {id:'genseries', l:'GENERATE_SERIES', v:'2022', k:'tvf', d:'Table-valued: returns a sequence of numbers between start and stop, with an optional step.',
+   x:"GENERATE_SERIES(«start=0», «stop=6», «step=1») AS «alias=g»",
+   ex:X([],`-- A one-week calendar without a numbers table
+SELECT g.value AS DayOffset,
+       DATEADD(day, g.value, CAST('2025-01-01' AS date)) AS CalendarDate
+FROM GENERATE_SERIES(0, 6) AS g;`)}
+]},
+{id:'cv', l:'Conversion & encoding', d:'Type conversion and Base64.', f:[
+  {id:'cast', l:'CAST', k:'s', d:'Converts a value to another data type, or raises an error if it cannot.', src:'dbo.Products AS p',
+   x:"CAST(«value=p.Price» AS «type=int») AS «alias=WholePrice»",
+   ex:X(['Products'],`SELECT p.Name, p.Price,
+       CAST(p.Price AS int)                                AS WholePrice,
+       CAST(p.ProductID AS varchar(10)) + '-' + p.Category AS Code
+FROM dbo.Products AS p;`)},
+  {id:'convert', l:'CONVERT (with style)', k:'s', d:'Like CAST, with a style number that controls date and number formats.', src:'dbo.Orders AS o',
+   x:"CONVERT(«type=varchar(10)», «value=o.OrderDate», «style=103») AS «alias=UkDate»",
+   ex:X(['Orders'],`SELECT o.OrderID,
+       CONVERT(varchar(10), o.OrderDate, 103) AS UkDate,    -- dd/mm/yyyy
+       CONVERT(varchar(10), o.OrderDate, 101) AS UsDate,    -- mm/dd/yyyy
+       CONVERT(varchar(10), o.OrderDate, 23)  AS IsoDate    -- yyyy-mm-dd
+FROM dbo.Orders AS o;`)},
+  {id:'trycast', l:'TRY_CAST / TRY_CONVERT', k:'s', d:'Like CAST and CONVERT, but return NULL instead of failing when the value cannot be converted.',
+   x:"TRY_CAST(«value=N'12.5x'» AS «type=decimal(10,2)») AS «alias=Parsed»",
+   ex:X([],`SELECT v.Raw,
+       TRY_CAST(v.Raw AS decimal(10,2)) AS AsDecimal,    -- NULL when it can't convert
+       TRY_CONVERT(date, v.Raw, 103)    AS AsUkDate
+FROM (VALUES (N'12.50'), (N'12.5x'), (N'31/12/2025')) AS v (Raw);`)},
+  {id:'b64enc', l:'BASE64_ENCODE', v:'2025', k:'s', d:'Encodes varbinary as Base64 text. Pass 1 as the second argument for the URL-safe alphabet.', src:'dbo.Customers AS c',
+   x:"BASE64_ENCODE(«varbinary_value=CAST(c.Name AS varbinary(200))») AS «alias=NameBase64»",
+   ex:X(['Customers'],`SELECT c.Name,
+       BASE64_ENCODE(CAST(c.Name AS varbinary(200)))    AS NameBase64,
+       BASE64_ENCODE(CAST(c.Name AS varbinary(200)), 1) AS UrlSafe
+FROM dbo.Customers AS c;`)},
+  {id:'b64dec', l:'BASE64_DECODE', v:'2025', k:'s', d:'Decodes Base64 text to varbinary. Cast the result to read it as text.',
+   x:"CAST(BASE64_DECODE(«base64='SGVsbG8gV29ybGQ='») AS «type=varchar(100)») AS «alias=Decoded»",
+   ex:X([],`SELECT CAST(BASE64_DECODE('SGVsbG8gV29ybGQ=') AS varchar(100)) AS Decoded;   -- Hello World
+
+-- Round trip
+DECLARE @raw varbinary(100) = CAST('SyntaxLab' AS varbinary(100));
+SELECT BASE64_ENCODE(@raw)                                     AS Encoded,
+       CAST(BASE64_DECODE(BASE64_ENCODE(@raw)) AS varchar(100)) AS RoundTrip;`)}
+]},
+{id:'agg', l:'Aggregates', d:'Summarise many rows into one value. Combine with GROUP BY for per-group results.', f:[
+  {id:'count', l:'COUNT(*)', k:'agg', d:'Counts rows. COUNT(column) counts non-NULL values instead.', src:'dbo.Orders AS o',
+   x:"COUNT(*) AS «alias=OrderCount»",
+   ex:X(['Orders'],`SELECT COUNT(*) AS OrderCount FROM dbo.Orders AS o;
+
+SELECT o.Status, COUNT(*) AS OrderCount
+FROM dbo.Orders AS o
+GROUP BY o.Status;`)},
+  {id:'countdistinct', l:'COUNT(DISTINCT …)', k:'agg', d:'Counts distinct non-NULL values.', src:'dbo.Orders AS o',
+   x:"COUNT(DISTINCT «expression=o.CustomerID») AS «alias=Buyers»",
+   ex:X(['Orders'],`SELECT COUNT(DISTINCT o.CustomerID) AS Buyers,
+       COUNT(*)                     AS Orders
+FROM dbo.Orders AS o;`)},
+  {id:'sum', l:'SUM', k:'agg', d:'Adds numeric values.', src:'dbo.OrderLines AS ol', tail:'\nGROUP BY «group_by=ol.OrderID»',
+   x:"SUM(«expression=ol.Qty * ol.UnitPrice») AS «alias=Revenue»",
+   ex:X(['OrderLines'],`SELECT ol.OrderID, SUM(ol.Qty * ol.UnitPrice) AS Revenue
+FROM dbo.OrderLines AS ol
+GROUP BY ol.OrderID
+ORDER BY Revenue DESC;`)},
+  {id:'avg', l:'AVG', k:'agg', d:'Averages numeric values and ignores NULL values.', src:'dbo.Products AS p', tail:'\nGROUP BY «group_by=p.Category»',
+   x:"AVG(«expression=p.Price») AS «alias=AvgPrice»",
+   ex:X(['Products'],`SELECT p.Category, AVG(p.Price) AS AvgPrice
+FROM dbo.Products AS p
+GROUP BY p.Category;`)},
+  {id:'minmax', l:'MIN / MAX', k:'agg', d:'Smallest and largest values. They work on numbers, dates and strings.', src:'dbo.Orders AS o',
+   x:"MIN(«expression=o.OrderDate») AS «alias=FirstOrder»",
+   ex:X(['Orders'],`SELECT o.CustomerID,
+       MIN(o.OrderDate) AS FirstOrder,
+       MAX(o.OrderDate) AS LatestOrder
+FROM dbo.Orders AS o
+GROUP BY o.CustomerID;`)},
+  {id:'stringagg', l:'STRING_AGG … WITHIN GROUP', k:'agg', d:'Concatenates strings across rows with a separator, in the order you choose.', src:'dbo.Customers AS c', tail:'\nGROUP BY «group_by=c.City»',
+   x:"STRING_AGG(«expression=c.Name», «separator=N', '») WITHIN GROUP (ORDER BY «order_by=c.Name») AS «alias=Names»",
+   ex:X(['Customers'],`SELECT c.City,
+       STRING_AGG(c.Name, N', ') WITHIN GROUP (ORDER BY c.Name) AS Customers
+FROM dbo.Customers AS c
+GROUP BY c.City;`)},
+  {id:'product', l:'PRODUCT', v:'2025', k:'agg', d:'Multiplies values across rows. Useful for compound growth rates.', src:'(VALUES (0.05), (0.03), (-0.02), (0.07)) AS r (GrowthRate)',
+   x:"PRODUCT(«expression=1 + r.GrowthRate») AS «alias=GrowthFactor»",
+   ex:X([],`-- Four periods of growth: +5%, +3%, -2%, +7%
+SELECT PRODUCT(1 + r.GrowthRate)     AS GrowthFactor,
+       PRODUCT(1 + r.GrowthRate) - 1 AS CompoundGrowth
+FROM (VALUES (0.05), (0.03), (-0.02), (0.07)) AS r (GrowthRate);`)},
+  {id:'approxcount', l:'APPROX_COUNT_DISTINCT', k:'agg', d:'Fast, approximate distinct count for very large tables (within about 2% error).', src:'dbo.Orders AS o',
+   x:"APPROX_COUNT_DISTINCT(«expression=o.CustomerID») AS «alias=ApproxBuyers»",
+   ex:X(['Orders'],`SELECT APPROX_COUNT_DISTINCT(o.CustomerID) AS ApproxBuyers,
+       COUNT(DISTINCT o.CustomerID)        AS ExactBuyers
+FROM dbo.Orders AS o;`)},
+  {id:'approxpct', l:'APPROX_PERCENTILE_CONT', v:'2022', k:'agg', d:'Approximate percentile, such as the median, computed as an aggregate.', src:'dbo.Employees AS e', tail:'\nGROUP BY «group_by=e.Dept»',
+   x:"APPROX_PERCENTILE_CONT(«fraction=0.5») WITHIN GROUP (ORDER BY «order_by=e.Salary») AS «alias=MedianSalary»",
+   ex:X(['Employees'],`SELECT e.Dept,
+       APPROX_PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY e.Salary) AS MedianSalary
+FROM dbo.Employees AS e
+GROUP BY e.Dept;`)},
+  {id:'grouping', l:'GROUPING()', k:'agg', d:'Returns 1 on subtotal rows made by ROLLUP, CUBE or GROUPING SETS, and 0 on detail rows.', src:'dbo.Customers AS c', tail:'\nGROUP BY ROLLUP («rollup_columns=c.City»)',
+   x:"GROUPING(«column=c.City») AS «alias=IsTotalRow»",
+   ex:X(['Customers'],`SELECT CASE WHEN GROUPING(c.City) = 1 THEN N'(all cities)' ELSE c.City END AS City,
+       COUNT(*)          AS Customers,
+       GROUPING(c.City)  AS IsTotalRow
+FROM dbo.Customers AS c
+GROUP BY ROLLUP (c.City);`)}
+]},
+{id:'win', l:'Window functions', d:'Calculations over a set of related rows, defined by OVER (PARTITION BY … ORDER BY …). Rows are not collapsed.', f:[
+  {id:'rownumber', l:'ROW_NUMBER()', k:'win', d:'Sequential number within each partition. Ties get different numbers.', src:'dbo.Employees AS e',
+   x:"ROW_NUMBER() OVER («over=PARTITION BY e.Dept ORDER BY e.Salary DESC») AS «alias=RowNum»",
+   ex:X(['Employees'],`SELECT e.Name, e.Dept, e.Salary,
+       ROW_NUMBER() OVER (PARTITION BY e.Dept ORDER BY e.Salary DESC) AS RowNum
+FROM dbo.Employees AS e;
+
+-- Top earner per department
+WITH ranked AS (
+    SELECT e.*, ROW_NUMBER() OVER (PARTITION BY e.Dept ORDER BY e.Salary DESC) AS rn
+    FROM dbo.Employees AS e
+)
+SELECT Name, Dept, Salary FROM ranked WHERE rn = 1;`)},
+  {id:'rank', l:'RANK()', k:'win', d:'Rank with gaps after ties (1, 1, 3).', src:'dbo.Employees AS e',
+   x:"RANK() OVER («over=PARTITION BY e.Dept ORDER BY e.Salary DESC») AS «alias=SalaryRank»",
+   ex:X(['Employees'],`SELECT e.Name, e.Dept, e.Salary,
+       RANK()       OVER (PARTITION BY e.Dept ORDER BY e.Salary) AS SalaryRank,
+       DENSE_RANK() OVER (PARTITION BY e.Dept ORDER BY e.Salary) AS DenseRank
+FROM dbo.Employees AS e
+ORDER BY e.Dept, e.Salary;`)},
+  {id:'denserank', l:'DENSE_RANK()', k:'win', d:'Rank without gaps after ties (1, 1, 2).', src:'dbo.Employees AS e',
+   x:"DENSE_RANK() OVER («over=ORDER BY e.Salary DESC») AS «alias=DenseRank»",
+   ex:X(['Employees'],`SELECT e.Name, e.Salary,
+       DENSE_RANK() OVER (ORDER BY e.Salary DESC) AS DenseRank
+FROM dbo.Employees AS e;`)},
+  {id:'ntile', l:'NTILE(n)', k:'win', d:'Splits ordered rows into n roughly equal groups, such as quartiles.', src:'dbo.Employees AS e',
+   x:"NTILE(«groups=4») OVER («over=ORDER BY e.Salary DESC») AS «alias=Quartile»",
+   ex:X(['Employees'],`SELECT e.Name, e.Salary,
+       NTILE(4) OVER (ORDER BY e.Salary DESC) AS Quartile
+FROM dbo.Employees AS e;`)},
+  {id:'lag', l:'LAG()', k:'win', d:'Reads a value from an earlier row in the same partition.', src:'dbo.Orders AS o',
+   x:"LAG(«expression=o.OrderDate», «offset=1») OVER («over=PARTITION BY o.CustomerID ORDER BY o.OrderDate») AS «alias=PreviousOrder»",
+   ex:X(['Orders'],`SELECT o.CustomerID, o.OrderID, o.OrderDate,
+       LAG(o.OrderDate) OVER (PARTITION BY o.CustomerID ORDER BY o.OrderDate) AS PreviousOrder,
+       DATEDIFF(day,
+                LAG(o.OrderDate) OVER (PARTITION BY o.CustomerID ORDER BY o.OrderDate),
+                o.OrderDate) AS DaysSincePrevious
+FROM dbo.Orders AS o
+ORDER BY o.CustomerID, o.OrderDate;`)},
+  {id:'lead', l:'LEAD()', k:'win', d:'Reads a value from a later row in the same partition.', src:'dbo.Orders AS o',
+   x:"LEAD(«expression=o.OrderDate», «offset=1») OVER («over=PARTITION BY o.CustomerID ORDER BY o.OrderDate») AS «alias=NextOrder»",
+   ex:X(['Orders'],`SELECT o.CustomerID, o.OrderID, o.OrderDate,
+       LEAD(o.OrderDate) OVER (PARTITION BY o.CustomerID ORDER BY o.OrderDate) AS NextOrder
+FROM dbo.Orders AS o
+ORDER BY o.CustomerID, o.OrderDate;`)},
+  {id:'firstvalue', l:'FIRST_VALUE() / LAST_VALUE()', k:'win', d:'First or last value in the window frame. Since SQL Server 2022 they accept IGNORE NULLS.', src:'dbo.Employees AS e',
+   x:"FIRST_VALUE(«expression=e.Name») OVER («over=PARTITION BY e.Dept ORDER BY e.HireDate») AS «alias=LongestServing»",
+   ex:X(['Employees'],`SELECT e.Name, e.Dept, e.HireDate,
+       FIRST_VALUE(e.Name) OVER (PARTITION BY e.Dept ORDER BY e.HireDate) AS LongestServing,
+       LAST_VALUE(e.Name)  OVER (PARTITION BY e.Dept ORDER BY e.HireDate
+                                 ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS NewestHire
+FROM dbo.Employees AS e;`)},
+  {id:'running', l:'SUM() OVER (ROWS …) running total', k:'win', d:'An aggregate with an ORDER BY and a ROWS frame gives running totals and moving averages.', src:'dbo.OrderLines AS ol',
+   x:"SUM(«expression=ol.Qty * ol.UnitPrice») OVER («over=ORDER BY ol.OrderID, ol.LineNumber ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW») AS «alias=RunningTotal»",
+   ex:X(['OrderLines'],`SELECT ol.OrderID, ol.LineNumber, ol.Qty * ol.UnitPrice AS LineTotal,
+       SUM(ol.Qty * ol.UnitPrice) OVER (ORDER BY ol.OrderID, ol.LineNumber
+                                        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS RunningTotal,
+       AVG(ol.Qty * ol.UnitPrice) OVER (ORDER BY ol.OrderID, ol.LineNumber
+                                        ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)         AS MovingAvg3
+FROM dbo.OrderLines AS ol;`)},
+  {id:'namedwindow', l:'OVER window_name', v:'2022', k:'win', d:'Refers to a window defined once in the WINDOW clause, so several functions can share it.', src:'dbo.Employees AS e', tail:'\nWINDOW «window_definition=w AS (PARTITION BY e.Dept)»',
+   x:"AVG(«expression=e.Salary») OVER «window=w» AS «alias=DeptAvg»",
+   ex:X(['Employees'],`SELECT e.Name, e.Dept, e.Salary,
+       AVG(e.Salary) OVER w AS DeptAvg,
+       MAX(e.Salary) OVER w AS DeptMax
+FROM dbo.Employees AS e
+WINDOW w AS (PARTITION BY e.Dept);`)}
+]},
+{id:'vec', l:'Vector & AI', v:'2025', d:'Native vector type, similarity functions and AI model calls, new in SQL Server 2025.', f:[
+  {id:'vecdist', l:'VECTOR_DISTANCE', v:'2025', k:'s', d:'Distance between two vectors using cosine, euclidean or dot. A smaller value means more similar.', src:'dbo.Articles AS a',
+   x:"VECTOR_DISTANCE(«metric='cosine'», «vector1=a.Embedding», «vector2=CAST('[0.90, 0.15, 0.08]' AS vector(3))») AS «alias=Distance»",
+   ex:X(['Articles'],`DECLARE @q vector(3) = '[0.90, 0.15, 0.08]';   -- a "road bike" style query vector
+
+SELECT TOP (3) a.Title,
+       VECTOR_DISTANCE('cosine', a.Embedding, @q) AS Distance
+FROM dbo.Articles AS a
+ORDER BY Distance;            -- exact k-nearest-neighbour search`)},
+  {id:'vecnorm', l:'VECTOR_NORM', v:'2025', k:'s', d:'Length of a vector: norm1, norm2 or norminf.', src:'dbo.Articles AS a',
+   x:"VECTOR_NORM(«vector=a.Embedding», «norm_type='norm2'») AS «alias=Length»",
+   ex:X(['Articles'],`SELECT a.Title,
+       VECTOR_NORM(a.Embedding, 'norm2')   AS EuclideanLength,
+       VECTOR_NORM(a.Embedding, 'norm1')   AS ManhattanLength,
+       VECTOR_NORM(a.Embedding, 'norminf') AS MaxComponent
+FROM dbo.Articles AS a;`)},
+  {id:'vecnormalize', l:'VECTOR_NORMALIZE', v:'2025', k:'s', d:'Scales a vector to length 1 for the chosen norm.', src:'dbo.Articles AS a',
+   x:"VECTOR_NORMALIZE(«vector=a.Embedding», «norm_type='norm2'») AS «alias=UnitVector»",
+   ex:X(['Articles'],`SELECT a.Title,
+       VECTOR_NORMALIZE(a.Embedding, 'norm2')                            AS UnitVector,
+       VECTOR_NORM(VECTOR_NORMALIZE(a.Embedding, 'norm2'), 'norm2')      AS ShouldBeOne
+FROM dbo.Articles AS a;`)},
+  {id:'vecprop', l:'VECTORPROPERTY', v:'2025', k:'s', d:'Returns a property of a vector: Dimensions or BaseType.', src:'dbo.Articles AS a',
+   x:"VECTORPROPERTY(«vector=a.Embedding», «property='Dimensions'») AS «alias=Dims»",
+   ex:X(['Articles'],`SELECT TOP (1)
+       VECTORPROPERTY(a.Embedding, 'Dimensions') AS Dims,
+       VECTORPROPERTY(a.Embedding, 'BaseType')   AS BaseType
+FROM dbo.Articles AS a;`)},
+  {id:'vecsearch', l:'VECTOR_SEARCH', v:'2025p', k:'tvf', nofrom:1, d:'Table-valued approximate nearest-neighbour search that uses a vector index. Preview in SQL Server 2025.',
+   root:"SELECT «columns=t.ArticleID, t.Title, s.distance»\nFROM VECTOR_SEARCH(\n        TABLE      = «table=dbo.Articles» AS t,\n        COLUMN     = «column=Embedding»,\n        SIMILAR_TO = «similar_to=@q»,\n        METRIC     = «metric='cosine'»,\n        TOP_N      = «top_n=3»\n     ) AS s\nORDER BY s.distance",
+   x:'', ex:X(['Articles'],`CREATE VECTOR INDEX VX_Articles_Embedding
+    ON dbo.Articles (Embedding)
+    WITH (METRIC = 'cosine', TYPE = 'diskann');
+GO
+
+DECLARE @q vector(3) = '[0.90, 0.15, 0.08]';
+
+SELECT t.ArticleID, t.Title, s.distance
+FROM VECTOR_SEARCH(
+        TABLE      = dbo.Articles AS t,
+        COLUMN     = Embedding,
+        SIMILAR_TO = @q,
+        METRIC     = 'cosine',
+        TOP_N      = 3
+     ) AS s
+ORDER BY s.distance;`, {note:'Vector indexes are a preview feature with build-specific limits. If CREATE VECTOR INDEX rejects this five-row sample table, the VECTOR_DISTANCE example returns the same ranking without an index.'})},
+  {id:'aiembed', l:'AI_GENERATE_EMBEDDINGS', v:'2025p', k:'s', d:'Calls an embeddings model registered with CREATE EXTERNAL MODEL and returns a vector.', src:'dbo.Articles AS a',
+   x:"AI_GENERATE_EMBEDDINGS(«text=a.Title» USE MODEL «model=MyEmbeddingModel») AS «alias=Embedding»",
+   ex:X(['Articles'],`-- Needs an embeddings endpoint you control. Replace every <...> value first.
+EXEC sp_configure 'external rest endpoint enabled', 1;
+RECONFIGURE WITH OVERRIDE;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.symmetric_keys WHERE name = '##MS_DatabaseMasterKey##')
+    CREATE MASTER KEY ENCRYPTION BY PASSWORD = '<choose-a-strong-password>';
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.database_scoped_credentials WHERE name = 'https://<your-resource>.openai.azure.com/')
+    CREATE DATABASE SCOPED CREDENTIAL [https://<your-resource>.openai.azure.com/]
+        WITH IDENTITY = 'HTTPEndpointHeaders',
+             SECRET   = '{"api-key":"<your-api-key>"}';
+GO
+DROP EXTERNAL MODEL IF EXISTS MyEmbeddingModel;
+GO
+CREATE EXTERNAL MODEL MyEmbeddingModel
+WITH (
+    LOCATION   = 'https://<your-resource>.openai.azure.com/openai/deployments/text-embedding-3-small/embeddings?api-version=2024-02-01',
+    API_FORMAT = 'Azure OpenAI',
+    MODEL_TYPE = EMBEDDINGS,
+    MODEL      = 'text-embedding-3-small',
+    CREDENTIAL = [https://<your-resource>.openai.azure.com/]
+);
+GO
+
+SELECT a.Title,
+       AI_GENERATE_EMBEDDINGS(a.Title USE MODEL MyEmbeddingModel) AS Embedding
+FROM dbo.Articles AS a;`, {note:'This example calls an external AI service. It will not run until you supply your own endpoint, deployment name and key.'})},
+  {id:'aichunks', l:'AI_GENERATE_CHUNKS', v:'2025p', k:'tvf', d:'Table-valued: splits text into chunks, ready for embedding. Returns chunk, chunk_order, chunk_offset and chunk_length.', src:'dbo.Tickets AS t',
+   x:"AI_GENERATE_CHUNKS(source = «source_text=t.Body», chunk_type = «chunk_type=FIXED», chunk_size = «chunk_size=40») AS «alias=c»",
+   ex:X(['Tickets'],`SELECT t.TicketID, c.chunk_order, c.chunk
+FROM dbo.Tickets AS t
+CROSS APPLY AI_GENERATE_CHUNKS(source = t.Body, chunk_type = FIXED, chunk_size = 40) AS c
+ORDER BY t.TicketID, c.chunk_order;`)}
+]},
+{id:'fz', l:'Fuzzy matching', v:'2025p', d:'String similarity functions for typo-tolerant matching. Preview in SQL Server 2025.', f:[
+  {id:'editdist', l:'EDIT_DISTANCE', v:'2025p', k:'s', d:'Damerau-Levenshtein distance: the number of edits needed to turn one string into the other.', src:'dbo.Products AS p',
+   x:"EDIT_DISTANCE(«string1=p.Name», «string2=N'Rode Bike 54cm'») AS «alias=Edits»", ex:FUZZY_EX},
+  {id:'editsim', l:'EDIT_DISTANCE_SIMILARITY', v:'2025p', k:'s', d:'Edit distance expressed as a similarity score from 0 to 100.', src:'dbo.Products AS p',
+   x:"EDIT_DISTANCE_SIMILARITY(«string1=p.Name», «string2=N'Rode Bike 54cm'») AS «alias=Similarity»", ex:FUZZY_EX},
+  {id:'jwdist', l:'JARO_WINKLER_DISTANCE', v:'2025p', k:'s', d:'Jaro-Winkler distance from 0.0 to 1.0. It favours strings that share a prefix.', src:'dbo.Products AS p',
+   x:"JARO_WINKLER_DISTANCE(«string1=p.Name», «string2=N'Rode Bike 54cm'») AS «alias=JwDistance»", ex:FUZZY_EX},
+  {id:'jwsim', l:'JARO_WINKLER_SIMILARITY', v:'2025p', k:'s', d:'Jaro-Winkler similarity from 0 to 100.', src:'dbo.Products AS p',
+   x:"JARO_WINKLER_SIMILARITY(«string1=p.Name», «string2=N'Rode Bike 54cm'») AS «alias=JwSimilarity»", ex:FUZZY_EX}
+]}
+];
+
+function fnNode(ctx, f){
+  const base = {id:ctx+'.'+f.id, l:f.l, d:f.d, v:f.v, ex:f.ex};
+  if(ctx==='cols'){
+    if(f.k==='tvf') return null;
+    const t = f.k==='pred' ? 'CASE WHEN '+f.x+' THEN 1 ELSE 0 END AS «flag_alias=IsMatch»' : f.x;
+    return Object.assign(base,{t, s:'cols', p:',\n       ', ind:7, rep:1});
+  }
+  if(ctx==='where'){
+    if(f.k!=='pred') return null;
+    return Object.assign(base,{t:'AND '+f.x, p:'\n  ', ind:2, rep:1});
+  }
+  if(ctx==='from'){
+    if(f.k!=='tvf' || f.nofrom) return null;
+    return Object.assign(base,{t:'CROSS APPLY '+f.x, p:'\n', rep:1});
+  }
+  // root: a complete statement
+  let t = f.root;
+  if(!t){
+    if(f.k==='tvf') t = f.src ? 'SELECT «columns=*»\nFROM «source='+f.src+'»\nCROSS APPLY '+f.x : 'SELECT «columns=*»\nFROM '+f.x;
+    else if(f.k==='pred') t = 'SELECT «columns='+(f.cols||'*')+'»\nFROM «source='+f.src+'»\nWHERE '+f.x;
+    else t = 'SELECT '+f.x+(f.src ? '\nFROM «source='+f.src+'»' : '')+(f.tail||'');
+  }
+  return Object.assign(base,{t});
+}
+function fnCats(ctx, only){
+  return FCATS.filter(c=>!only || only.includes(c.id)).map(c=>{
+    const kids = c.f.map(f=>fnNode(ctx,f)).filter(Boolean);
+    return kids.length ? {id:ctx+'.cat.'+c.id, l:c.l, g:1, v:c.v, d:c.d, c:kids} : null;
+  }).filter(Boolean);
+}
+const fnList = (ctx) => FCATS.flatMap(c=>c.f.map(f=>fnNode(ctx,f))).filter(Boolean);
+
+/* Small reusable node factories */
+const andCond = (id, dflt) => ({id, l:'AND condition', s:'cond', p:' ', t:'AND «condition='+dflt+'»', d:'Adds an extra search condition to this WHEN clause.'});
+const optionNode = (id, ex) => ({id, l:'OPTION (query hints)', t:'OPTION («hints=RECOMPILE»)', d:'Query hints for this statement only, such as RECOMPILE, MAXDOP n or OPTIMIZE FOR.', ex});
+const topNode = (id, d, ex) => ({id, l:'TOP (n)', s:'mod', p:' ', t:'TOP («count=2»)', d, ex});
+
+/* Shared examples */
+const MERGE_EX = X(['Products','ProductStaging'],`MERGE dbo.Products WITH (HOLDLOCK) AS t
+USING dbo.ProductStaging AS s
+    ON t.ProductID = s.ProductID
+WHEN MATCHED AND t.Price <> s.Price THEN
+    UPDATE SET t.Price = s.Price
+WHEN NOT MATCHED BY TARGET THEN
+    INSERT (ProductID, Name, Category, Price)
+    VALUES (s.ProductID, s.Name, s.Category, s.Price)
+WHEN NOT MATCHED BY SOURCE THEN
+    UPDATE SET t.Discontinued = 1
+OUTPUT $action AS MergeAction,
+       inserted.ProductID, deleted.Price AS OldPrice, inserted.Price AS NewPrice;
+
+SELECT * FROM dbo.Products ORDER BY ProductID;`);
+
+const CT_EX = X(['Customers'],`CREATE TABLE dbo.Invoices
+(
+    InvoiceID     int IDENTITY(1,1) NOT NULL,
+    InvoiceNumber varchar(20)       NOT NULL,
+    CustomerID    int               NOT NULL,
+    Amount        decimal(12,2)     NOT NULL,
+    CreatedAt     datetime2(0)      NOT NULL
+        CONSTRAINT DF_Invoices_CreatedAt DEFAULT SYSUTCDATETIME(),
+    CONSTRAINT PK_Invoices PRIMARY KEY CLUSTERED (InvoiceID),
+    CONSTRAINT UQ_Invoices_Number UNIQUE (InvoiceNumber),
+    CONSTRAINT FK_Invoices_Customers FOREIGN KEY (CustomerID)
+        REFERENCES dbo.Customers (CustomerID),
+    CONSTRAINT CK_Invoices_Amount CHECK (Amount >= 0)
+);
+
+INSERT dbo.Invoices (InvoiceNumber, CustomerID, Amount)
+VALUES ('INV-2025-0042', 6, 1249.00);
+
+SELECT * FROM dbo.Invoices;`);
+
+/* ============================================================
+   The syntax tree
+   t: template. «key=default» is a value you plug in; [[slot]] is where child options go.
+   s: slot in the parent (default body), p: text placed before the child, ind: indent for the child's continuation lines
+   rep: can be added more than once, auto: children added automatically, g: menu group (no syntax of its own)
+   ============================================================ */
+const TREE = [
+{id:'sel', l:'SELECT', d:'Retrieves rows from tables, views, functions or derived tables. Every clause is optional except the select list.',
+ t:'SELECT[[mod]] «columns=c.CustomerID, c.Name, c.City»[[cols]][[body]]',
+ ex:X(['Customers'],`SELECT c.CustomerID, c.Name, c.City
+FROM dbo.Customers AS c;`),
+ c:[
+  {id:'sel.distinct', l:'DISTINCT', s:'mod', p:' ', t:'DISTINCT', d:'Removes duplicate rows from the result.',
+   ex:X(['Customers'],`SELECT DISTINCT c.City
+FROM dbo.Customers AS c
+ORDER BY c.City;`)},
+  {id:'sel.top', l:'TOP (n)', s:'mod', p:' ', t:'TOP («count=10»)[[mod]]', d:'Limits the number of rows returned. Pair it with ORDER BY so the result is predictable.',
+   ex:X(['Products'],`SELECT TOP (3) p.Name, p.Price
+FROM dbo.Products AS p
+ORDER BY p.Price DESC;`), c:[
+    {id:'sel.top.pct', l:'PERCENT', s:'mod', p:' ', t:'PERCENT', d:'Treats n as a percentage of the rows.',
+     ex:X(['Products'],`SELECT TOP (50) PERCENT p.Name, p.Price
+FROM dbo.Products AS p
+ORDER BY p.Price DESC;`)},
+    {id:'sel.top.ties', l:'WITH TIES', s:'mod', p:' ', t:'WITH TIES', d:'Also returns rows that tie with the last row on the ORDER BY value. Requires ORDER BY.',
+     ex:X(['Employees'],`-- Both lowest-paid sales staff earn 97,000, so TOP (1) WITH TIES returns two rows
+SELECT TOP (1) WITH TIES e.Name, e.Dept, e.Salary
+FROM dbo.Employees AS e
+WHERE e.Dept = N'Sales'
+ORDER BY e.Salary;`)}
+  ]},
+  {id:'sel.expr', l:'Select-list expressions', g:1, d:'Columns and calculations added to the select list, each separated by a comma.', dflt:{s:'cols', p:',\n       ', ind:7, rep:1}, c:[
+    {id:'sel.alias', l:'expression AS alias', t:'«expression=c.Name» AS «alias=CustomerName»', d:'Any column or calculation, with a column name for the result.',
+     ex:X(['Products'],`SELECT p.Name AS ProductName,
+       p.Price * 1.0825 AS PriceWithTax
+FROM dbo.Products AS p;`)},
+    {id:'sel.case', l:'CASE (searched)', t:"CASE\n    WHEN «condition=o.Status = 'Shipped'» THEN «result='Complete'»[[when]]\n    ELSE «else_result='Open'»\nEND AS «alias=StatusLabel»", d:'Returns the result of the first WHEN condition that is true, or ELSE.',
+     ex:X(['Orders'],`SELECT o.OrderID, o.Status,
+       CASE
+           WHEN o.Status = 'Shipped'   THEN 'Complete'
+           WHEN o.Status = 'Cancelled' THEN 'Void'
+           ELSE 'Open'
+       END AS StatusLabel
+FROM dbo.Orders AS o;`), c:[
+      {id:'sel.case.when', l:'WHEN … THEN', s:'when', p:'\n    ', ind:0, rep:1, t:"WHEN «condition=o.Status = 'Cancelled'» THEN «result='Void'»", d:'Another condition and result, tested in order.'}
+    ]},
+    {id:'sel.scase', l:'CASE (simple)', t:"CASE «input=p.Category»\n    WHEN «match=N'Bikes'» THEN «result=N'Ride'»[[when]]\n    ELSE «else_result=N'Gear'»\nEND AS «alias=Kind»", d:'Compares one expression to a list of values.',
+     ex:X(['Products'],`SELECT p.Name,
+       CASE p.Category
+           WHEN N'Bikes'  THEN N'Ride'
+           WHEN N'Safety' THEN N'Protect'
+           ELSE N'Gear'
+       END AS Kind
+FROM dbo.Products AS p;`), c:[
+      {id:'sel.scase.when', l:'WHEN value THEN', s:'when', p:'\n    ', ind:0, rep:1, t:"WHEN «match=N'Safety'» THEN «result=N'Protect'»", d:'Another value to compare against.'}
+    ]},
+    {id:'sel.subq', l:'Scalar subquery', t:'(SELECT COUNT(*)\n FROM «table=dbo.Orders AS o»\n WHERE «correlation=o.CustomerID = c.CustomerID») AS «alias=OrderCount»', d:'A subquery that returns one value per row. It can refer to the outer query.',
+     ex:X(['Orders'],`SELECT c.Name,
+       (SELECT COUNT(*)
+        FROM dbo.Orders AS o
+        WHERE o.CustomerID = c.CustomerID) AS OrderCount
+FROM dbo.Customers AS c;`)},
+    ...fnCats('cols')
+  ]},
+  {id:'sel.into', l:'INTO new_table', t:'INTO «new_table=#SeattleCustomers»', d:'Creates a new table from the result set. A # prefix makes it a temporary table.',
+   ex:X(['Customers'],`SELECT c.CustomerID, c.Name
+INTO #SeattleCustomers
+FROM dbo.Customers AS c
+WHERE c.City = N'Seattle';
+
+SELECT * FROM #SeattleCustomers;
+DROP TABLE #SeattleCustomers;`)},
+  {id:'sel.from', l:'FROM', t:'FROM «source=dbo.Customers AS c»[[hint]]', d:'The table, view, derived table or function the rows come from. Joins and APPLY add more sources.',
+   ex:X(['Customers'],`SELECT c.Name, c.City
+FROM dbo.Customers AS c;`), c:[
+    {id:'sel.from.hint', l:'WITH (table hint)', s:'hint', p:' ', t:'WITH («hints=NOLOCK»)', d:'Table hints such as NOLOCK, READPAST, UPDLOCK or INDEX(name). NOLOCK can read uncommitted or duplicated rows.',
+     ex:X(['Orders'],`SELECT o.OrderID, o.Status
+FROM dbo.Orders AS o WITH (READPAST)     -- skip rows locked by other sessions
+WHERE o.Status = 'Pending';`)},
+    {id:'sel.joins', l:'Joins', g:1, d:'Combine rows from another table on a matching condition.', dflt:{p:'\n', rep:1}, c:[
+      {id:'sel.join.inner', l:'INNER JOIN', t:'INNER JOIN «table=dbo.Orders AS o»\n    ON «on=o.CustomerID = c.CustomerID»', d:'Keeps only rows that match on both sides.',
+       ex:X(['Orders'],`SELECT c.Name, o.OrderID, o.OrderDate
+FROM dbo.Customers AS c
+INNER JOIN dbo.Orders AS o
+    ON o.CustomerID = c.CustomerID
+ORDER BY c.Name, o.OrderDate;`)},
+      {id:'sel.join.left', l:'LEFT OUTER JOIN', t:'LEFT OUTER JOIN «table=dbo.Orders AS o»\n    ON «on=o.CustomerID = c.CustomerID»', d:'Keeps every row from the left side. Columns from the right side are NULL where nothing matches.',
+       ex:X(['Orders'],`-- Tailspin Toys has no orders, so its order columns are NULL
+SELECT c.Name, o.OrderID, o.Status
+FROM dbo.Customers AS c
+LEFT OUTER JOIN dbo.Orders AS o
+    ON o.CustomerID = c.CustomerID
+ORDER BY c.Name;`)},
+      {id:'sel.join.right', l:'RIGHT OUTER JOIN', t:'RIGHT OUTER JOIN «table=dbo.Orders AS o»\n    ON «on=o.CustomerID = c.CustomerID»', d:'Keeps every row from the right side.',
+       ex:X(['Orders'],`SELECT c.Name, o.OrderID
+FROM dbo.Orders AS o
+RIGHT OUTER JOIN dbo.Customers AS c
+    ON c.CustomerID = o.CustomerID;`)},
+      {id:'sel.join.full', l:'FULL OUTER JOIN', t:'FULL OUTER JOIN «table=dbo.OrderLines AS ol»\n    ON «on=ol.ProductID = p.ProductID»', d:'Keeps unmatched rows from both sides.',
+       ex:X(['OrderLines'],`-- Products never ordered, and order lines, side by side
+SELECT p.Name, ol.OrderID, ol.Qty
+FROM dbo.Products AS p
+FULL OUTER JOIN dbo.OrderLines AS ol
+    ON ol.ProductID = p.ProductID
+ORDER BY p.Name;`)},
+      {id:'sel.join.cross', l:'CROSS JOIN', t:'CROSS JOIN «table=dbo.Products AS p»', d:'Every combination of rows from both sides (Cartesian product).',
+       ex:X(['Customers','Products'],`SELECT c.Name, cat.Category
+FROM dbo.Customers AS c
+CROSS JOIN (SELECT DISTINCT Category FROM dbo.Products) AS cat
+ORDER BY c.Name, cat.Category;`)},
+      {id:'sel.join.capply', l:'CROSS APPLY', t:'CROSS APPLY «subquery=(\n    SELECT TOP (1) o.OrderID, o.OrderDate\n    FROM dbo.Orders AS o\n    WHERE o.CustomerID = c.CustomerID\n    ORDER BY o.OrderDate DESC\n)» AS «alias=lastOrder»', d:'Runs a subquery or table-valued function once per outer row. Rows with no result are dropped.',
+       ex:X(['Orders'],`-- Latest order per customer
+SELECT c.Name, lastOrder.OrderID, lastOrder.OrderDate
+FROM dbo.Customers AS c
+CROSS APPLY (
+    SELECT TOP (1) o.OrderID, o.OrderDate
+    FROM dbo.Orders AS o
+    WHERE o.CustomerID = c.CustomerID
+    ORDER BY o.OrderDate DESC
+) AS lastOrder;`)},
+      {id:'sel.join.oapply', l:'OUTER APPLY', t:'OUTER APPLY «subquery=(\n    SELECT TOP (1) o.OrderID, o.OrderDate\n    FROM dbo.Orders AS o\n    WHERE o.CustomerID = c.CustomerID\n    ORDER BY o.OrderDate DESC\n)» AS «alias=lastOrder»', d:'Like CROSS APPLY, but keeps outer rows that get no result (with NULL values).',
+       ex:X(['Orders'],`SELECT c.Name, lastOrder.OrderID, lastOrder.OrderDate
+FROM dbo.Customers AS c
+OUTER APPLY (
+    SELECT TOP (1) o.OrderID, o.OrderDate
+    FROM dbo.Orders AS o
+    WHERE o.CustomerID = c.CustomerID
+    ORDER BY o.OrderDate DESC
+) AS lastOrder;          -- Tailspin Toys appears with NULL values`)}
+    ]},
+    {id:'sel.from.tvf', l:'Table-valued functions', g:1, d:'Functions that return rows, applied per row with CROSS APPLY.', c:fnList('from')},
+    {id:'sel.pivot', l:'PIVOT', t:'PIVOT\n(\n    «aggregate=SUM(Revenue)» FOR «pivot_column=Category» IN («values=[Bikes], [Safety], [Accessories]»)\n) AS «alias=pvt»', d:'Turns the values of one column into columns, aggregating as it goes. The FROM source is usually a derived table.',
+     ex:X(['OrderLines'],`SELECT pvt.*
+FROM (
+    SELECT o.CustomerID, p.Category, ol.Qty * ol.UnitPrice AS Revenue
+    FROM dbo.OrderLines AS ol
+    INNER JOIN dbo.Orders   AS o ON o.OrderID   = ol.OrderID
+    INNER JOIN dbo.Products AS p ON p.ProductID = ol.ProductID
+) AS src
+PIVOT
+(
+    SUM(Revenue) FOR Category IN ([Bikes], [Safety], [Accessories])
+) AS pvt;`)},
+    {id:'sel.unpivot', l:'UNPIVOT', t:'UNPIVOT\n(\n    «value_column=Amount» FOR «name_column=Category» IN («columns=Bikes, Safety, Accessories»)\n) AS «alias=unpvt»', d:'Turns columns into rows.',
+     ex:X([],`SELECT unpvt.Quarter, unpvt.Category, unpvt.Amount
+FROM (VALUES ('Q1', 2498.00,  59.00, 228.00),
+             ('Q2', 1249.00, 354.00, 304.20)) AS q (Quarter, Bikes, Safety, Accessories)
+UNPIVOT
+(
+    Amount FOR Category IN (Bikes, Safety, Accessories)
+) AS unpvt;`)}
+  ]},
+  {id:'sel.where', l:'WHERE', t:"WHERE «condition=c.City = N'Seattle'»", d:'Filters rows before grouping. Add predicates below to extend the condition with AND.',
+   ex:X(['Customers'],`SELECT c.Name, c.City
+FROM dbo.Customers AS c
+WHERE c.City = N'Seattle';`), c:[
+    {id:'sel.preds', l:'Predicates', g:1, d:'Conditions combined into the WHERE clause.', dflt:{p:'\n  ', ind:2, rep:1}, c:[
+      {id:'sel.w.and', l:'AND condition', t:'AND «condition=c.Email IS NOT NULL»', d:'Both conditions must be true.',
+       ex:X(['Customers'],`SELECT c.Name, c.City, c.Email
+FROM dbo.Customers AS c
+WHERE c.City = N'Seattle'
+  AND c.Email IS NOT NULL;`)},
+      {id:'sel.w.or', l:'OR condition', t:"OR «condition=c.City = N'Tacoma'»", d:'Either condition can be true. AND binds tighter than OR, so use parentheses when you mix them.',
+       ex:X(['Customers'],`SELECT c.Name, c.City, c.CreatedAt
+FROM dbo.Customers AS c
+WHERE (c.City = N'Seattle' OR c.City = N'Tacoma')
+  AND c.CreatedAt >= '2025-01-01';`)},
+      {id:'sel.w.between', l:'BETWEEN … AND', t:"AND «expression=o.OrderDate» BETWEEN «low='2025-02-01'» AND «high='2025-04-30'»", d:'Inclusive range test.',
+       ex:X(['Orders'],`SELECT o.OrderID, o.OrderDate
+FROM dbo.Orders AS o
+WHERE o.OrderDate BETWEEN '2025-02-01' AND '2025-04-30';`)},
+      {id:'sel.w.in', l:'IN (list)', t:"AND «expression=c.City» IN («values=N'Seattle', N'Tacoma'»)", d:'Matches any value in a list.',
+       ex:X(['Customers'],`SELECT c.Name, c.City
+FROM dbo.Customers AS c
+WHERE c.City IN (N'Seattle', N'Tacoma');`)},
+      {id:'sel.w.insub', l:'IN (subquery)', t:"AND «expression=c.CustomerID» IN (SELECT «column=o.CustomerID» FROM «table=dbo.Orders AS o» WHERE «condition=o.Status = 'Pending'»)", d:'Matches any value returned by a subquery.',
+       ex:X(['Orders'],`SELECT c.Name
+FROM dbo.Customers AS c
+WHERE c.CustomerID IN (SELECT o.CustomerID FROM dbo.Orders AS o WHERE o.Status = 'Pending');`)},
+      {id:'sel.w.exists', l:'EXISTS (subquery)', t:'AND EXISTS (\n    SELECT 1\n    FROM «table=dbo.Orders AS o»\n    WHERE «correlation=o.CustomerID = c.CustomerID»\n)', d:'True when the correlated subquery returns at least one row.',
+       ex:X(['Orders'],`SELECT c.Name
+FROM dbo.Customers AS c
+WHERE EXISTS (
+    SELECT 1
+    FROM dbo.Orders AS o
+    WHERE o.CustomerID = c.CustomerID
+);`)},
+      {id:'sel.w.notexists', l:'NOT EXISTS (subquery)', t:'AND NOT EXISTS (\n    SELECT 1\n    FROM «table=dbo.Orders AS o»\n    WHERE «correlation=o.CustomerID = c.CustomerID»\n)', d:'True when the subquery returns no rows. The usual anti-join pattern.',
+       ex:X(['Orders'],`-- Customers who have never ordered
+SELECT c.Name
+FROM dbo.Customers AS c
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM dbo.Orders AS o
+    WHERE o.CustomerID = c.CustomerID
+);`)},
+      {id:'sel.w.like', l:'LIKE pattern', t:"AND «expression=c.Name» LIKE «pattern=N'%Works%'»", d:'Wildcard match: % for any run of characters, _ for one character, [a-c] for a range.',
+       ex:X(['Customers'],`SELECT c.Name
+FROM dbo.Customers AS c
+WHERE c.Name LIKE N'%Works%'
+   OR c.Name LIKE N'[A-C]%';`)},
+      {id:'sel.w.isnull', l:'IS [NOT] NULL', t:'AND «expression=c.Email» IS NULL', d:'NULL never equals anything, so test for it with IS NULL or IS NOT NULL.',
+       ex:X(['Customers'],`SELECT c.Name, c.Email, c.Phone
+FROM dbo.Customers AS c
+WHERE c.Email IS NULL
+   OR c.Phone IS NULL;`)},
+      {id:'sel.w.distinct', l:'IS [NOT] DISTINCT FROM', v:'2022', t:'AND «left=c.Email» IS NOT DISTINCT FROM «right=@email»', d:'NULL-safe comparison: two NULL values count as equal.',
+       ex:X(['Customers'],`DECLARE @email varchar(254) = NULL;
+
+-- "=" never matches NULL; IS NOT DISTINCT FROM does
+SELECT c.Name, c.Email
+FROM dbo.Customers AS c
+WHERE c.Email IS NOT DISTINCT FROM @email;`)},
+      {id:'sel.w.all', l:'comparison ALL / ANY (subquery)', t:"AND «expression=p.Price» > ALL (SELECT «column=p2.Price» FROM «table=dbo.Products AS p2» WHERE «condition=p2.Category = N'Safety'»)", d:'Compares a value with every (ALL) or at least one (ANY) row of a subquery.',
+       ex:X(['Products'],`-- Products dearer than every safety product
+SELECT p.Name, p.Price
+FROM dbo.Products AS p
+WHERE p.Price > ALL (SELECT p2.Price FROM dbo.Products AS p2 WHERE p2.Category = N'Safety');`)},
+      ...fnList('where')
+    ]}
+  ]},
+  {id:'sel.groupby', l:'GROUP BY', t:'GROUP BY «columns=c.City»[[mod]]', d:'Collapses rows into one row per group so you can aggregate them.',
+   ex:X(['Customers'],`SELECT c.City, COUNT(*) AS Customers
+FROM dbo.Customers AS c
+GROUP BY c.City;`), c:[
+    {id:'sel.rollup', l:'ROLLUP (…)', s:'mod', p:', ', t:'ROLLUP («columns=p.Category»)', d:'Adds hierarchical subtotals and a grand total. Clear the columns field above if you only want the ROLLUP.',
+     ex:X(['OrderLines'],`SELECT p.Category, p.Name, SUM(ol.Qty * ol.UnitPrice) AS Revenue
+FROM dbo.OrderLines AS ol
+INNER JOIN dbo.Products AS p ON p.ProductID = ol.ProductID
+GROUP BY ROLLUP (p.Category, p.Name)
+ORDER BY GROUPING(p.Category), p.Category, GROUPING(p.Name), p.Name;`)},
+    {id:'sel.cube', l:'CUBE (…)', s:'mod', p:', ', t:'CUBE («columns=o.Status»)', d:'Subtotals for every combination of the listed columns.',
+     ex:X(['Orders'],`SELECT c.City, o.Status, COUNT(*) AS Orders
+FROM dbo.Orders AS o
+INNER JOIN dbo.Customers AS c ON c.CustomerID = o.CustomerID
+GROUP BY CUBE (c.City, o.Status)
+ORDER BY GROUPING(c.City), c.City, GROUPING(o.Status), o.Status;`)},
+    {id:'sel.gsets', l:'GROUPING SETS (…)', s:'mod', p:', ', t:'GROUPING SETS («sets=(o.Status), ()»)', d:'Exactly the groupings you list. () is the grand total.',
+     ex:X(['Orders'],`SELECT c.City, o.Status, COUNT(*) AS Orders
+FROM dbo.Orders AS o
+INNER JOIN dbo.Customers AS c ON c.CustomerID = o.CustomerID
+GROUP BY GROUPING SETS ((c.City), (o.Status), ());`)}
+  ]},
+  {id:'sel.having', l:'HAVING', t:'HAVING «condition=COUNT(*) > 1»', d:'Filters groups after aggregation. WHERE filters rows before it.',
+   ex:X(['Orders'],`SELECT o.CustomerID, COUNT(*) AS Orders
+FROM dbo.Orders AS o
+GROUP BY o.CustomerID
+HAVING COUNT(*) > 1;`)},
+  {id:'sel.window', l:'WINDOW', v:'2022', t:'WINDOW «name=w» AS («definition=PARTITION BY e.Dept ORDER BY e.Salary DESC»)', d:'Names a window definition once so OVER w can reuse it.',
+   ex:X(['Employees'],`SELECT e.Name, e.Dept, e.Salary,
+       RANK()        OVER w AS SalaryRank,
+       SUM(e.Salary) OVER w AS RunningDeptPayroll
+FROM dbo.Employees AS e
+WINDOW w AS (PARTITION BY e.Dept ORDER BY e.Salary DESC);`)},
+  {id:'sel.setops', l:'Set operators', g:1, d:'Combine the result with another query. Both queries need the same number of columns, with compatible types.', dflt:{p:'\n'}, c:[
+    {id:'sel.union', l:'UNION', rep:1, t:'UNION\n«query=SELECT t.CustomerID FROM dbo.Tickets AS t»', d:'Rows from both queries, with duplicates removed.',
+     ex:X(['Orders','Tickets'],`-- Customers who ordered or raised a ticket
+SELECT o.CustomerID FROM dbo.Orders AS o
+UNION
+SELECT t.CustomerID FROM dbo.Tickets AS t;`)},
+    {id:'sel.unionall', l:'UNION ALL', rep:1, t:"UNION ALL\n«query=SELECT e.Name, N'Employee' FROM dbo.Employees AS e»", d:'Rows from both queries, duplicates kept. Faster than UNION.',
+     ex:X(['Customers','Employees'],`SELECT c.Name, N'Customer' AS Kind FROM dbo.Customers AS c
+UNION ALL
+SELECT e.Name, N'Employee'         FROM dbo.Employees AS e
+ORDER BY Kind, Name;`)},
+    {id:'sel.intersect', l:'INTERSECT', rep:1, t:'INTERSECT\n«query=SELECT t.CustomerID FROM dbo.Tickets AS t»', d:'Rows that appear in both results.',
+     ex:X(['Orders','Tickets'],`-- Customers who ordered AND raised a ticket
+SELECT o.CustomerID FROM dbo.Orders AS o
+INTERSECT
+SELECT t.CustomerID FROM dbo.Tickets AS t;`)},
+    {id:'sel.except', l:'EXCEPT', rep:1, t:'EXCEPT\n«query=SELECT o.CustomerID FROM dbo.Orders AS o»', d:'Rows in the first result that are not in the second.',
+     ex:X(['Orders'],`-- Customers with no orders
+SELECT c.CustomerID FROM dbo.Customers AS c
+EXCEPT
+SELECT o.CustomerID FROM dbo.Orders AS o;`)}
+  ]},
+  {id:'sel.orderby', l:'ORDER BY', t:'ORDER BY «columns=c.Name ASC»', d:'Sorts the final result. Without it, row order is not guaranteed.',
+   ex:X(['Customers'],`SELECT c.Name, c.City, c.CreatedAt
+FROM dbo.Customers AS c
+ORDER BY c.City ASC, c.CreatedAt DESC;`), c:[
+    {id:'sel.offset', l:'OFFSET … FETCH', t:'OFFSET «skip=0» ROWS FETCH NEXT «take=10» ROWS ONLY', d:'Paging: skip n rows, then return the next m.',
+     ex:X(['Customers'],`DECLARE @PageNumber int = 2, @PageSize int = 2;
+
+SELECT c.CustomerID, c.Name
+FROM dbo.Customers AS c
+ORDER BY c.CustomerID
+OFFSET (@PageNumber - 1) * @PageSize ROWS
+FETCH NEXT @PageSize ROWS ONLY;`)}
+  ]},
+  {id:'sel.forjson', l:'FOR JSON', t:'FOR JSON «mode=PATH»[[mod]]', d:'Returns the result as JSON text. PATH mode uses dotted aliases for nesting; AUTO nests by table.',
+   ex:X(['Customers'],`SELECT c.CustomerID AS [id], c.Name AS [name], c.City AS [address.city]
+FROM dbo.Customers AS c
+FOR JSON PATH;`), c:[
+    {id:'sel.fj.root', l:'ROOT (name)', s:'mod', p:', ', t:"ROOT(«name='customers'»)", d:'Wraps the array in an object with this property name.',
+     ex:X(['Customers'],`SELECT c.CustomerID AS [id], c.Name AS [name]
+FROM dbo.Customers AS c
+FOR JSON PATH, ROOT('customers');`)},
+    {id:'sel.fj.nulls', l:'INCLUDE_NULL_VALUES', s:'mod', p:', ', t:'INCLUDE_NULL_VALUES', d:'Writes NULL columns as null instead of leaving them out.',
+     ex:X(['Customers'],`SELECT c.Name AS [name], c.Email AS [email]
+FROM dbo.Customers AS c
+WHERE c.City = N'Seattle'
+FOR JSON PATH, INCLUDE_NULL_VALUES;`)},
+    {id:'sel.fj.nowrap', l:'WITHOUT_ARRAY_WRAPPER', s:'mod', p:', ', t:'WITHOUT_ARRAY_WRAPPER', d:'Leaves out the surrounding [ ]. Use it for single-row results.',
+     ex:X(['Customers'],`SELECT c.CustomerID AS [id], c.Name AS [name]
+FROM dbo.Customers AS c
+WHERE c.CustomerID = 1
+FOR JSON PATH, WITHOUT_ARRAY_WRAPPER;`)}
+  ]},
+  {id:'sel.forxml', l:'FOR XML', t:"FOR XML «mode=PATH('Customer')», ROOT(«root='Customers'»)", d:'Returns the result as XML.',
+   ex:X(['Customers'],`SELECT c.CustomerID AS [@id], c.Name, c.City
+FROM dbo.Customers AS c
+FOR XML PATH('Customer'), ROOT('Customers');`)},
+  optionNode('sel.option', X(['Orders'],`DECLARE @CustomerID int = 1;
+
+SELECT o.OrderID, o.OrderDate
+FROM dbo.Orders AS o
+WHERE o.CustomerID = @CustomerID
+OPTION (RECOMPILE, MAXDOP 1);`))
+ ]},
+
+{id:'ins', l:'INSERT', d:'Adds rows to a table or view. The row source can be VALUES, a SELECT, a stored procedure, or DEFAULT VALUES.',
+ t:'INSERT INTO «table=dbo.Customers» («columns=Name, City, Email»)[[out]][[src]]', auto:['ins.values'],
+ ex:X(['Customers'],`INSERT INTO dbo.Customers (Name, City, Email)
+VALUES (N'Litware Inc.', N'Spokane', 'team@litware.example');
+
+SELECT * FROM dbo.Customers WHERE Name = N'Litware Inc.';`),
+ c:[
+  {id:'ins.output', l:'OUTPUT', s:'out', p:'\n', t:'OUTPUT «columns=inserted.CustomerID, inserted.Name»', d:'Returns the inserted rows, including identity and default values.',
+   ex:X(['Customers'],`INSERT INTO dbo.Customers (Name, City)
+OUTPUT inserted.CustomerID, inserted.Name, inserted.CreatedAt
+VALUES (N'Proseware', N'Boise'),
+       (N'Lucerne Publishing', N'Spokane');`)},
+  {id:'ins.outinto', l:'OUTPUT … INTO', s:'out', p:'\n', t:"OUTPUT «columns='Customers', 'INSERT', inserted.CustomerID, inserted.Name»\n    INTO «target=dbo.AuditLog» («target_columns=TableName, Operation, KeyValue, Detail»)", d:'Writes the inserted rows into another table or table variable.',
+   ex:X(['Customers','AuditLog'],`INSERT INTO dbo.Customers (Name, City)
+OUTPUT 'Customers', 'INSERT', inserted.CustomerID, inserted.Name
+    INTO dbo.AuditLog (TableName, Operation, KeyValue, Detail)
+VALUES (N'Proseware', N'Boise');
+
+SELECT * FROM dbo.AuditLog;`)},
+  {id:'ins.src', l:'Row source', g:1, d:'Where the new rows come from. Pick one.', dflt:{s:'src', p:'\n'}, c:[
+    {id:'ins.values', l:'VALUES (…)', t:"VALUES («row=N'Litware Inc.', N'Spokane', 'team@litware.example'»)[[rows]]", d:'One or more literal rows (table value constructor).',
+     ex:X(['Customers'],`INSERT INTO dbo.Customers (Name, City, Email)
+VALUES (N'Litware Inc.', N'Spokane', 'team@litware.example'),
+       (N'Proseware',    N'Boise',   NULL);
+
+SELECT Name, City, Email FROM dbo.Customers;`), c:[
+      {id:'ins.values.row', l:'Additional row', s:'rows', p:',\n       ', rep:1, t:"(«row=N'Proseware', N'Boise', NULL»)", d:'Another row in the same statement (up to 1,000).'}
+    ]},
+    {id:'ins.select', l:'SELECT …', t:'SELECT «columns=s.ProductID, s.Name, s.Category, s.Price»\nFROM «source=dbo.ProductStaging AS s»\nWHERE «condition=s.Price > 0»', d:'Inserts the result of a query. Set the target table and columns to match.',
+     ex:X(['Products','ProductStaging'],`INSERT INTO dbo.Products (ProductID, Name, Category, Price)
+SELECT s.ProductID, s.Name, s.Category, s.Price
+FROM dbo.ProductStaging AS s
+WHERE NOT EXISTS (SELECT 1 FROM dbo.Products AS p WHERE p.ProductID = s.ProductID);
+
+SELECT * FROM dbo.Products ORDER BY ProductID;`)},
+    {id:'ins.exec', l:'EXEC procedure', t:'EXEC «procedure=dbo.usp_StagedProducts»', d:'Inserts the result set returned by a stored procedure.',
+     ex:X(['Products','ProductStaging'],`CREATE OR ALTER PROCEDURE dbo.usp_StagedProducts
+AS
+    SELECT s.ProductID, s.Name, s.Category, s.Price
+    FROM dbo.ProductStaging AS s
+    WHERE s.ProductID NOT IN (SELECT ProductID FROM dbo.Products);
+GO
+
+INSERT INTO dbo.Products (ProductID, Name, Category, Price)
+EXEC dbo.usp_StagedProducts;
+
+SELECT * FROM dbo.Products ORDER BY ProductID;`)},
+    {id:'ins.default', l:'DEFAULT VALUES', t:'DEFAULT VALUES', d:'Inserts one row using every column default. Clear the column list when you use it.',
+     ex:X([],`CREATE TABLE #Requests
+(
+    RequestID   int IDENTITY(1,1) PRIMARY KEY,
+    RequestedAt datetime2(0) NOT NULL DEFAULT SYSUTCDATETIME(),
+    Status      varchar(10)  NOT NULL DEFAULT 'New'
+);
+
+INSERT INTO #Requests DEFAULT VALUES;
+INSERT INTO #Requests DEFAULT VALUES;
+
+SELECT * FROM #Requests;
+DROP TABLE #Requests;`)}
+  ]}
+ ]},
+
+{id:'upd', l:'UPDATE', d:'Changes values in existing rows. Always check the WHERE clause, because without it every row changes.',
+ t:'UPDATE[[mod]] «target=dbo.Products»\nSET «assignment=Price = Price * 1.05»[[set]][[out]][[body]]', auto:['upd.where'],
+ ex:X(['Products'],`UPDATE dbo.Products
+SET Price = Price * 1.05
+WHERE Category = N'Safety';
+
+SELECT ProductID, Name, Category, Price FROM dbo.Products;`),
+ c:[
+  topNode('upd.top','Changes at most n rows. Which rows is not defined, so prefer a WHERE clause or a CTE with ORDER BY.',
+   X(['Orders'],`UPDATE TOP (2) dbo.Orders
+SET Status = 'Shipped'
+WHERE Status = 'Pending';
+
+SELECT OrderID, Status FROM dbo.Orders;`)),
+  {id:'upd.sets', l:'SET assignments', g:1, d:'More columns to change in the same statement.', dflt:{s:'set', p:',\n    ', rep:1}, c:[
+    {id:'upd.set.col', l:'column = value', t:'«column=Discontinued» = «value=0»', d:'Assigns a new value to another column.',
+     ex:X(['Products'],`UPDATE dbo.Products
+SET Price = 1199.00,
+    Discontinued = 0
+WHERE ProductID = 2;
+
+SELECT * FROM dbo.Products WHERE ProductID = 2;`)},
+    {id:'upd.set.compound', l:'compound += -= *=', t:'«column=Price» «operator=+=» «value=5»', d:'Shorthand that applies an operator to the current value.',
+     ex:X(['Products'],`UPDATE dbo.Products
+SET Price += 5
+WHERE Category = N'Accessories';
+
+SELECT Name, Price FROM dbo.Products WHERE Category = N'Accessories';`)},
+    {id:'upd.set.pipes', l:'||= append', v:'2025', t:"«column=Name» ||= «suffix=N' (2025 model)'»", d:'Appends text with the ANSI concatenation operator, new in SQL Server 2025.',
+     ex:X(['Products'],`UPDATE dbo.Products
+SET Name ||= N' (2025 model)'
+WHERE Category = N'Bikes';
+
+SELECT Name FROM dbo.Products WHERE Category = N'Bikes';`)},
+    {id:'upd.set.var', l:'@variable = column = value', t:'«variable=@NewPrice» = «column=Price» = «value=Price * 1.10»', d:'Updates the column and captures the new value in a variable. Declare the variable first.',
+     ex:X(['Products'],`DECLARE @NewPrice decimal(10,2);
+
+UPDATE dbo.Products
+SET @NewPrice = Price = Price * 1.10
+WHERE ProductID = 1;
+
+SELECT @NewPrice AS NewHelmetPrice;`)}
+  ]},
+  {id:'upd.output', l:'OUTPUT', s:'out', p:'\n', t:'OUTPUT «columns=deleted.Price AS OldPrice, inserted.Price AS NewPrice»', d:'Returns before (deleted.*) and after (inserted.*) values for each changed row.',
+   ex:X(['Products'],`UPDATE dbo.Products
+SET Price = Price * 0.90
+OUTPUT inserted.ProductID, inserted.Name,
+       deleted.Price  AS OldPrice,
+       inserted.Price AS NewPrice
+WHERE Category = N'Bikes';`)},
+  {id:'upd.from', l:'FROM … JOIN', t:'FROM «source=dbo.Products AS p»\nINNER JOIN «join_table=dbo.ProductStaging AS s»\n    ON «on=s.ProductID = p.ProductID»', d:'Updates using values from another table. Set the UPDATE target to the alias (for example p).',
+   ex:X(['Products','ProductStaging'],`UPDATE p
+SET p.Price = s.Price
+OUTPUT inserted.Name, deleted.Price AS OldPrice, inserted.Price AS NewPrice
+FROM dbo.Products AS p
+INNER JOIN dbo.ProductStaging AS s
+    ON s.ProductID = p.ProductID
+WHERE p.Price <> s.Price;`)},
+  {id:'upd.where', l:'WHERE', t:"WHERE «condition=Category = N'Safety'»", d:'Limits which rows change.',
+   ex:X(['Products'],`UPDATE dbo.Products
+SET Discontinued = 1
+WHERE Category = N'Safety' AND Price < 30;
+
+SELECT Name, Discontinued FROM dbo.Products;`)},
+  optionNode('upd.option', X(['Products'],`UPDATE dbo.Products
+SET Price = Price * 1.02
+WHERE Category = N'Accessories'
+OPTION (MAXDOP 1);`))
+ ]},
+
+{id:'del', l:'DELETE', d:'Removes rows from a table. Without WHERE it removes every row (TRUNCATE TABLE is faster for that).',
+ t:'DELETE[[mod]] FROM «target=dbo.Orders»[[out]][[body]]', auto:['del.where'],
+ ex:X(['Orders'],`DELETE FROM dbo.Orders
+WHERE Status = 'Cancelled';
+
+SELECT OrderID, Status FROM dbo.Orders;`),
+ c:[
+  topNode('del.top','Deletes at most n rows. Useful for deleting a large table in batches.',
+   X(['Orders'],`-- Delete in batches of 2 until nothing is left to delete
+WHILE 1 = 1
+BEGIN
+    DELETE TOP (2) FROM dbo.Orders
+    WHERE OrderDate < '2025-06-01';
+
+    IF @@ROWCOUNT = 0 BREAK;
+END;
+
+SELECT * FROM dbo.Orders;`)),
+  {id:'del.output', l:'OUTPUT', s:'out', p:'\n', t:'OUTPUT «columns=deleted.OrderID, deleted.Status»', d:'Returns the deleted rows. Add INTO to archive them.',
+   ex:X(['Orders'],`DELETE FROM dbo.Orders
+OUTPUT deleted.OrderID, deleted.CustomerID, deleted.Status
+WHERE Status = 'Cancelled';`)},
+  {id:'del.from', l:'FROM … JOIN', t:'FROM «source=dbo.Orders AS o»\nINNER JOIN «join_table=dbo.Customers AS c»\n    ON «on=c.CustomerID = o.CustomerID»', d:'Deletes based on a join. Set the DELETE target to the alias (for example o).',
+   ex:X(['Orders'],`DELETE FROM o
+FROM dbo.Orders AS o
+INNER JOIN dbo.Customers AS c
+    ON c.CustomerID = o.CustomerID
+WHERE c.City = N'Seattle' AND o.Status = 'Pending';
+
+SELECT * FROM dbo.Orders;`)},
+  {id:'del.where', l:'WHERE', t:"WHERE «condition=Status = 'Cancelled'»", d:'Limits which rows are removed.',
+   ex:X(['Orders'],`DELETE FROM dbo.Orders
+WHERE Status = 'Cancelled';`)},
+  optionNode('del.option', X(['Orders'],`DELETE FROM dbo.Orders
+WHERE Status = 'Cancelled'
+OPTION (MAXDOP 1);`))
+ ]},
+
+{id:'mrg', l:'MERGE', d:'Inserts, updates and deletes in one statement by comparing a source with a target. It must end with a semicolon.',
+ t:'MERGE «target=dbo.Products»[[hint]] AS «target_alias=t»\nUSING «source=dbo.ProductStaging» AS «source_alias=s»\n    ON «on=t.ProductID = s.ProductID»[[body]]', auto:['mrg.mupd','mrg.nmt'],
+ ex:MERGE_EX,
+ c:[
+  {id:'mrg.hold', l:'WITH (HOLDLOCK)', s:'hint', p:' ', t:'WITH (HOLDLOCK)', d:'Serialises concurrent MERGE statements to prevent race conditions on the target.', ex:MERGE_EX},
+  {id:'mrg.mupd', l:'WHEN MATCHED THEN UPDATE', t:'WHEN MATCHED[[cond]] THEN\n    UPDATE SET «assignments=t.Price = s.Price»', d:'Updates target rows that have a matching source row.',
+   ex:X(['Products','ProductStaging'],`MERGE dbo.Products AS t
+USING dbo.ProductStaging AS s
+    ON t.ProductID = s.ProductID
+WHEN MATCHED AND t.Price <> s.Price THEN
+    UPDATE SET t.Price = s.Price
+OUTPUT $action, inserted.ProductID, deleted.Price AS OldPrice, inserted.Price AS NewPrice;`), c:[andCond('mrg.mupd.and','t.Price <> s.Price')]},
+  {id:'mrg.mdel', l:'WHEN MATCHED THEN DELETE', t:'WHEN MATCHED[[cond]] THEN\n    DELETE', d:'Deletes target rows that have a match. Use an AND condition if you also have a WHEN MATCHED … UPDATE.',
+   ex:X(['Products','ProductStaging'],`MERGE dbo.Products AS t
+USING dbo.ProductStaging AS s
+    ON t.ProductID = s.ProductID
+WHEN MATCHED AND s.Price = t.Price THEN
+    DELETE
+OUTPUT $action, deleted.ProductID, deleted.Name;`), c:[andCond('mrg.mdel.and','s.Price = t.Price')]},
+  {id:'mrg.nmt', l:'WHEN NOT MATCHED BY TARGET', t:'WHEN NOT MATCHED BY TARGET[[cond]] THEN\n    INSERT («columns=ProductID, Name, Category, Price»)\n    VALUES («values=s.ProductID, s.Name, s.Category, s.Price»)', d:'Inserts source rows that have no match in the target.',
+   ex:X(['Products','ProductStaging'],`MERGE dbo.Products AS t
+USING dbo.ProductStaging AS s
+    ON t.ProductID = s.ProductID
+WHEN NOT MATCHED BY TARGET THEN
+    INSERT (ProductID, Name, Category, Price)
+    VALUES (s.ProductID, s.Name, s.Category, s.Price)
+OUTPUT $action, inserted.ProductID, inserted.Name;`), c:[andCond('mrg.nmt.and',"s.Category <> N'Discontinued'")]},
+  {id:'mrg.nms', l:'WHEN NOT MATCHED BY SOURCE', t:'WHEN NOT MATCHED BY SOURCE[[cond]] THEN\n    «action=UPDATE SET t.Discontinued = 1»', d:'Acts on target rows missing from the source: UPDATE (soft delete) or DELETE.',
+   ex:X(['Products','ProductStaging'],`MERGE dbo.Products AS t
+USING dbo.ProductStaging AS s
+    ON t.ProductID = s.ProductID
+WHEN NOT MATCHED BY SOURCE THEN
+    UPDATE SET t.Discontinued = 1
+OUTPUT $action, inserted.ProductID, inserted.Name, inserted.Discontinued;`), c:[andCond('mrg.nms.and','t.Discontinued = 0')]},
+  {id:'mrg.output', l:'OUTPUT $action', t:'OUTPUT $action AS «action_alias=MergeAction», «columns=inserted.ProductID, deleted.Price AS OldPrice, inserted.Price AS NewPrice»', d:'Returns each affected row with INSERT, UPDATE or DELETE in $action.', ex:MERGE_EX}
+ ]},
+
+{id:'cte', l:'WITH (common table expressions)', g:1, d:'Named, temporary result sets that the next statement can use. A CTE can refer to itself for recursion.', c:[
+ {id:'cte.std', l:'WITH … AS (CTE)', d:'Defines one or more named queries, then runs a statement that uses them.',
+  t:'WITH «name=CustomerTotals» («columns=CustomerID, OrderCount») AS\n(\n    «query=SELECT o.CustomerID, COUNT(*)\n    FROM dbo.Orders AS o\n    GROUP BY o.CustomerID»\n)[[more]]\n«statement=SELECT c.Name, ct.OrderCount\nFROM CustomerTotals AS ct\nINNER JOIN dbo.Customers AS c ON c.CustomerID = ct.CustomerID»[[opt]]',
+  ex:X(['Orders'],`WITH CustomerTotals (CustomerID, OrderCount) AS
+(
+    SELECT o.CustomerID, COUNT(*)
+    FROM dbo.Orders AS o
+    GROUP BY o.CustomerID
+)
+SELECT c.Name, ct.OrderCount
+FROM CustomerTotals AS ct
+INNER JOIN dbo.Customers AS c ON c.CustomerID = ct.CustomerID
+ORDER BY ct.OrderCount DESC;`), c:[
+   {id:'cte.std.more', l:'Additional CTE', s:'more', p:',\n', rep:1, t:'«name=FrequentBuyers» AS\n(\n    «query=SELECT ct.CustomerID FROM CustomerTotals AS ct WHERE ct.OrderCount >= 2»\n)', d:'Another named query. It can refer to the CTEs defined before it.',
+    ex:X(['Orders'],`WITH CustomerTotals AS
+(
+    SELECT o.CustomerID, COUNT(*) AS OrderCount
+    FROM dbo.Orders AS o
+    GROUP BY o.CustomerID
+),
+FrequentBuyers AS
+(
+    SELECT ct.CustomerID FROM CustomerTotals AS ct WHERE ct.OrderCount >= 2
+)
+SELECT c.Name
+FROM FrequentBuyers AS fb
+INNER JOIN dbo.Customers AS c ON c.CustomerID = fb.CustomerID;`)},
+   {id:'cte.std.dml', l:'Modify through the CTE', s:'more', p:'', t:'', d:'The final statement can be UPDATE or DELETE against the CTE. Replace the statement field with your own; this example shows the pattern.',
+    ex:X(['Orders'],`-- Keep only each customer's most recent order (delete the older ones)
+WITH Ranked AS
+(
+    SELECT o.*, ROW_NUMBER() OVER (PARTITION BY o.CustomerID ORDER BY o.OrderDate DESC) AS rn
+    FROM dbo.Orders AS o
+)
+DELETE FROM Ranked
+WHERE rn > 1;
+
+SELECT * FROM dbo.Orders ORDER BY CustomerID;`)},
+   {id:'cte.std.opt', l:'OPTION (…)', s:'opt', p:'\n', t:'OPTION («hints=RECOMPILE»)', d:'Query hints for the whole statement.',
+    ex:X(['Orders'],`WITH c AS (SELECT o.CustomerID, COUNT(*) AS n FROM dbo.Orders AS o GROUP BY o.CustomerID)
+SELECT * FROM c
+OPTION (RECOMPILE);`)}
+ ]},
+ {id:'cte.rec', l:'WITH … recursive CTE', d:'An anchor query UNION ALL a recursive query that joins back to the CTE. Used for hierarchies and graphs.',
+  t:'WITH «name=OrgChart» («columns=EmployeeID, Name, ManagerID, Depth») AS\n(\n    «anchor=SELECT e.EmployeeID, e.Name, e.ManagerID, 0\n    FROM dbo.Employees AS e\n    WHERE e.ManagerID IS NULL»\n    UNION ALL\n    «recursive=SELECT e.EmployeeID, e.Name, e.ManagerID, oc.Depth + 1\n    FROM dbo.Employees AS e\n    INNER JOIN OrgChart AS oc ON oc.EmployeeID = e.ManagerID»\n)[[more]]\n«statement=SELECT * FROM OrgChart ORDER BY Depth, Name»[[opt]]',
+  ex:X(['Employees'],`WITH OrgChart AS
+(
+    SELECT e.EmployeeID, e.Name, e.ManagerID, 0 AS Depth,
+           CAST(e.Name AS nvarchar(400)) AS ReportingPath
+    FROM dbo.Employees AS e
+    WHERE e.ManagerID IS NULL                      -- anchor: the CEO
+    UNION ALL
+    SELECT e.EmployeeID, e.Name, e.ManagerID, oc.Depth + 1,
+           CAST(oc.ReportingPath + N' > ' + e.Name AS nvarchar(400))
+    FROM dbo.Employees AS e
+    INNER JOIN OrgChart AS oc ON oc.EmployeeID = e.ManagerID   -- recursive step
+)
+SELECT REPLICATE(N'    ', Depth) + Name AS Employee, ReportingPath
+FROM OrgChart
+ORDER BY ReportingPath
+OPTION (MAXRECURSION 100);`), c:[
+   {id:'cte.rec.more', l:'Additional CTE', s:'more', p:',\n', rep:1, t:'«name=Managers» AS\n(\n    «query=SELECT DISTINCT ManagerID FROM OrgChart WHERE ManagerID IS NOT NULL»\n)', d:'Another named query that can use the recursive CTE.'},
+   {id:'cte.rec.max', l:'OPTION (MAXRECURSION n)', s:'opt', p:'\n', t:'OPTION (MAXRECURSION «limit=100»)', d:'Caps the recursion depth (default 100, 0 = no limit).'}
+ ]}
+]},
+
+{id:'ct', l:'CREATE TABLE', d:'Defines a new table: columns, data types, constraints and table options.',
+ t:'CREATE TABLE «name=dbo.Invoices»\n(\n    «columns=InvoiceID     int IDENTITY(1,1) NOT NULL,\n    InvoiceNumber varchar(20)       NOT NULL,\n    CustomerID    int               NOT NULL,\n    Amount        decimal(12,2)     NOT NULL»[[cols]][[cons]]\n)[[opts]]',
+ ex:CT_EX, c:[
+  {id:'ct.cols', l:'Columns', g:1, d:'Extra column definitions.', dflt:{s:'cols', p:',\n    ', ind:4, rep:1}, c:[
+    {id:'ct.col', l:'column  type  NULL', t:'«name=Notes» «type=nvarchar(400)» «nullability=NULL»', d:'A plain column definition.', ex:CT_EX},
+    {id:'ct.col.default', l:'column … DEFAULT', t:'«name=CreatedAt» «type=datetime2(0)» NOT NULL\n    CONSTRAINT «constraint=DF_Invoices_CreatedAt» DEFAULT «default=SYSUTCDATETIME()»', d:'A named default used when an INSERT leaves the column out.', ex:CT_EX},
+    {id:'ct.col.computed', l:'computed column', t:'«name=AmountWithTax» AS «expression=Amount * 1.0825» «persisted=PERSISTED»', d:'Calculated from other columns. PERSISTED stores the value so it can be indexed.',
+     ex:X([],`DROP TABLE IF EXISTS dbo.PriceQuotes;
+CREATE TABLE dbo.PriceQuotes
+(
+    QuoteID      int IDENTITY(1,1) PRIMARY KEY,
+    Amount       decimal(12,2) NOT NULL,
+    TaxRate      decimal(5,4)  NOT NULL DEFAULT 0.0825,
+    AmountWithTax AS ROUND(Amount * (1 + TaxRate), 2) PERSISTED
+);
+
+INSERT dbo.PriceQuotes (Amount) VALUES (100.00), (1249.00);
+SELECT * FROM dbo.PriceQuotes;`)},
+    {id:'ct.col.json', l:'json column', v:'2025', t:'«name=Attributes» json «nullability=NULL»', d:'Native json data type: stored in a binary format and validated on insert.',
+     ex:X([],`DROP TABLE IF EXISTS dbo.DeviceSettings;
+CREATE TABLE dbo.DeviceSettings
+(
+    DeviceID   int  NOT NULL PRIMARY KEY,
+    Attributes json NULL
+);
+
+INSERT dbo.DeviceSettings (DeviceID, Attributes)
+VALUES (1, '{"theme":"dark","alerts":{"email":true,"sms":false}}'),
+       (2, '{"theme":"light","alerts":{"email":false,"sms":true}}');
+
+SELECT DeviceID,
+       JSON_VALUE(Attributes, '$.theme')        AS Theme,
+       JSON_VALUE(Attributes, '$.alerts.email') AS EmailAlerts
+FROM dbo.DeviceSettings;
+
+-- Invalid JSON is rejected:
+-- INSERT dbo.DeviceSettings VALUES (3, '{not json}');`)},
+    {id:'ct.col.vector', l:'vector(n) column', v:'2025', t:'«name=Embedding» vector(«dimensions=1536») «nullability=NULL»', d:'Native vector data type for embeddings, with up to 1,998 float32 dimensions.',
+     ex:X([],`DROP TABLE IF EXISTS dbo.DocChunks;
+CREATE TABLE dbo.DocChunks
+(
+    ChunkID   int           NOT NULL PRIMARY KEY,
+    ChunkText nvarchar(400) NOT NULL,
+    Embedding vector(3)     NOT NULL
+);
+
+INSERT dbo.DocChunks VALUES
+    (1, N'Pump tyres to 80 psi',       '[0.70, 0.20, 0.10]'),
+    (2, N'Replace helmet after a crash', '[0.10, 0.90, 0.20]');
+
+SELECT ChunkID, ChunkText, Embedding,
+       VECTORPROPERTY(Embedding, 'Dimensions') AS Dims
+FROM dbo.DocChunks;`)},
+    {id:'ct.col.period', l:'PERIOD FOR SYSTEM_TIME', t:'ValidFrom datetime2 GENERATED ALWAYS AS ROW START HIDDEN NOT NULL,\nValidTo   datetime2 GENERATED ALWAYS AS ROW END   HIDDEN NOT NULL,\nPERIOD FOR SYSTEM_TIME (ValidFrom, ValidTo)', rep:0, d:'Period columns for a system-versioned (temporal) table. Add the SYSTEM_VERSIONING table option too.',
+     ex:X([],`IF OBJECT_ID(N'dbo.PriceList') IS NOT NULL
+    ALTER TABLE dbo.PriceList SET (SYSTEM_VERSIONING = OFF);
+DROP TABLE IF EXISTS dbo.PriceList;
+DROP TABLE IF EXISTS dbo.PriceListHistory;
+GO
+
+CREATE TABLE dbo.PriceList
+(
+    ProductID int           NOT NULL PRIMARY KEY CLUSTERED,
+    Price     decimal(10,2) NOT NULL,
+    ValidFrom datetime2 GENERATED ALWAYS AS ROW START HIDDEN NOT NULL,
+    ValidTo   datetime2 GENERATED ALWAYS AS ROW END   HIDDEN NOT NULL,
+    PERIOD FOR SYSTEM_TIME (ValidFrom, ValidTo)
+)
+WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = dbo.PriceListHistory));
+GO
+
+INSERT dbo.PriceList (ProductID, Price) VALUES (1, 59.00);
+WAITFOR DELAY '00:00:01';
+UPDATE dbo.PriceList SET Price = 64.00 WHERE ProductID = 1;
+
+-- Every version of the row, current and historical
+SELECT ProductID, Price, ValidFrom, ValidTo
+FROM dbo.PriceList FOR SYSTEM_TIME ALL
+ORDER BY ValidFrom;`)}
+  ]},
+  {id:'ct.cons', l:'Table constraints', g:1, d:'Keys and rules that apply to the table.', dflt:{s:'cons', p:',\n    ', ind:4, rep:1}, c:[
+    {id:'ct.pk', l:'PRIMARY KEY', rep:0, t:'CONSTRAINT «name=PK_Invoices» PRIMARY KEY «clustering=CLUSTERED» («columns=InvoiceID»)', d:'Uniquely identifies each row. Clustered by default.', ex:CT_EX},
+    {id:'ct.fk', l:'FOREIGN KEY … REFERENCES', t:'CONSTRAINT «name=FK_Invoices_Customers» FOREIGN KEY («columns=CustomerID»)\n    REFERENCES «ref_table=dbo.Customers» («ref_columns=CustomerID»)[[act]]', d:'Each value must exist in the referenced table.', ex:CT_EX, c:[
+      {id:'ct.fk.act', l:'ON DELETE / ON UPDATE', s:'act', p:'\n    ', t:'ON DELETE «on_delete=CASCADE»', d:'What happens to child rows when the parent changes: NO ACTION, CASCADE, SET NULL or SET DEFAULT.',
+       ex:X(['Customers'],`CREATE TABLE dbo.Invoices
+(
+    InvoiceID  int IDENTITY PRIMARY KEY,
+    CustomerID int NOT NULL,
+    Amount     decimal(12,2) NOT NULL,
+    CONSTRAINT FK_Invoices_Customers FOREIGN KEY (CustomerID)
+        REFERENCES dbo.Customers (CustomerID)
+        ON DELETE CASCADE
+);
+
+INSERT dbo.Invoices (CustomerID, Amount) VALUES (5, 120.00), (5, 80.00);
+DELETE FROM dbo.Customers WHERE CustomerID = 5;      -- also deletes the invoices
+SELECT COUNT(*) AS RemainingInvoices FROM dbo.Invoices;`)}
+    ]},
+    {id:'ct.uq', l:'UNIQUE', t:'CONSTRAINT «name=UQ_Invoices_Number» UNIQUE («columns=InvoiceNumber»)', d:'No two rows can share the value. Unlike a primary key, one NULL is allowed.', ex:CT_EX},
+    {id:'ct.ck', l:'CHECK', t:'CONSTRAINT «name=CK_Invoices_Amount» CHECK («expression=Amount >= 0»)', d:'Rejects rows where the expression is false.', ex:CT_EX}
+  ]},
+  {id:'ct.opts', l:'Table options', g:1, d:'Options after the closing parenthesis. Use one WITH (…) block; separate several options with commas.', dflt:{s:'opts', p:'\n'}, c:[
+    {id:'ct.opt.temporal', l:'WITH (SYSTEM_VERSIONING = ON)', t:'WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = «history_table=dbo.InvoicesHistory»))', d:'Keeps full row history in a history table. Needs PERIOD FOR SYSTEM_TIME columns.', ex:null},
+    {id:'ct.opt.compress', l:'WITH (DATA_COMPRESSION)', t:'WITH (DATA_COMPRESSION = «compression=PAGE»)', d:'ROW or PAGE compression to save space and I/O.',
+     ex:X([],`DROP TABLE IF EXISTS dbo.EventArchive;
+CREATE TABLE dbo.EventArchive
+(
+    EventID   bigint IDENTITY PRIMARY KEY,
+    EventTime datetime2(3) NOT NULL,
+    Payload   nvarchar(1000) NULL
+)
+WITH (DATA_COMPRESSION = PAGE);
+
+SELECT OBJECT_NAME(p.object_id) AS TableName, p.data_compression_desc
+FROM sys.partitions AS p
+WHERE p.object_id = OBJECT_ID(N'dbo.EventArchive');`)}
+  ]}
+ ]},
+
+{id:'alt', l:'ALTER TABLE', excl:1, d:'Changes an existing table. Each statement performs one kind of change, so choosing another action replaces the current one.',
+ t:'ALTER TABLE «table=dbo.Customers»[[body]]', auto:['alt.add'],
+ ex:X(['Customers'],`ALTER TABLE dbo.Customers
+ADD LoyaltyTier varchar(10) NULL;
+
+SELECT TOP (2) * FROM dbo.Customers;`),
+ c:[
+  {id:'alt.actions', l:'Actions', g:1, d:'Pick one change.', dflt:{p:'\n'}, c:[
+    {id:'alt.add', l:'ADD column', t:'ADD «column=LoyaltyTier» «type=varchar(10)» «nullability=NULL»', d:'Adds a column. A NOT NULL column needs a DEFAULT when the table already has rows.',
+     ex:X(['Customers'],`ALTER TABLE dbo.Customers
+ADD LoyaltyTier varchar(10) NOT NULL
+    CONSTRAINT DF_Customers_LoyaltyTier DEFAULT 'Bronze';
+
+SELECT Name, LoyaltyTier FROM dbo.Customers;`)},
+    {id:'alt.alter', l:'ALTER COLUMN', t:'ALTER COLUMN «column=Phone» «type=varchar(40)» «nullability=NULL»', d:'Changes a column\'s data type, size or nullability.',
+     ex:X(['Customers'],`ALTER TABLE dbo.Customers
+ALTER COLUMN Phone varchar(40) NULL;
+
+SELECT c.name, t.name AS type_name, c.max_length
+FROM sys.columns AS c
+JOIN sys.types   AS t ON t.user_type_id = c.user_type_id
+WHERE c.object_id = OBJECT_ID(N'dbo.Customers') AND c.name = 'Phone';`)},
+    {id:'alt.dropcol', l:'DROP COLUMN', t:'DROP COLUMN IF EXISTS «column=Phone»', d:'Removes a column. Drop any constraints or indexes on it first.',
+     ex:X(['Customers'],`ALTER TABLE dbo.Customers
+DROP COLUMN IF EXISTS Phone;
+
+SELECT TOP (2) * FROM dbo.Customers;`)},
+    {id:'alt.addck', l:'ADD CONSTRAINT (CHECK)', t:"ADD CONSTRAINT «name=CK_Customers_CreatedAt» CHECK («expression=CreatedAt >= '2000-01-01'»)", d:'Adds a CHECK, UNIQUE, PRIMARY KEY or FOREIGN KEY constraint. Existing rows are checked.',
+     ex:X(['Customers'],`ALTER TABLE dbo.Customers
+ADD CONSTRAINT CK_Customers_CreatedAt CHECK (CreatedAt >= '2000-01-01');
+
+BEGIN TRY
+    INSERT dbo.Customers (Name, City, CreatedAt) VALUES (N'Time Traveller', N'Nowhere', '1999-12-31');
+END TRY
+BEGIN CATCH
+    SELECT ERROR_MESSAGE() AS Rejected;
+END CATCH;`)},
+    {id:'alt.addrx', l:'ADD CHECK with REGEXP_LIKE', v:'2025', t:"WITH NOCHECK ADD CONSTRAINT «name=CK_Customers_Email» CHECK (REGEXP_LIKE(«column=Email», «pattern='^[^@\\s]+@[^@\\s]+\\.[a-z]{2,}$'», 'i'))", d:'Validates a column with a regular expression. WITH NOCHECK skips existing rows and checks only new and changed ones.',
+     ex:X(['Customers'],`-- 'sales@fabrikam' already exists and is invalid, so skip existing rows
+ALTER TABLE dbo.Customers WITH NOCHECK
+ADD CONSTRAINT CK_Customers_Email
+    CHECK (REGEXP_LIKE(Email, '^[^@\\s]+@[^@\\s]+\\.[a-z]{2,}$', 'i'));
+
+BEGIN TRY
+    INSERT dbo.Customers (Name, City, Email) VALUES (N'Bad Data Co', N'Boise', 'not-an-email');
+END TRY
+BEGIN CATCH
+    SELECT ERROR_MESSAGE() AS Rejected;
+END CATCH;
+
+INSERT dbo.Customers (Name, City, Email) VALUES (N'Good Data Co', N'Boise', 'hi@gooddata.example');
+SELECT Name, Email FROM dbo.Customers;`)},
+    {id:'alt.adddf', l:'ADD DEFAULT … FOR', t:"ADD CONSTRAINT «name=DF_Customers_City» DEFAULT «value=N'Unknown'» FOR «column=City»", d:'Adds a default value to an existing column.',
+     ex:X(['Customers'],`ALTER TABLE dbo.Customers
+ADD CONSTRAINT DF_Customers_City DEFAULT N'Unknown' FOR City;
+
+INSERT dbo.Customers (Name) VALUES (N'Mystery Buyer');
+SELECT Name, City FROM dbo.Customers WHERE Name = N'Mystery Buyer';`)},
+    {id:'alt.dropcon', l:'DROP CONSTRAINT', t:'DROP CONSTRAINT IF EXISTS «name=DF_Customers_CreatedAt»', d:'Removes a named constraint.',
+     ex:X(['Customers'],`ALTER TABLE dbo.Customers
+DROP CONSTRAINT IF EXISTS DF_Customers_CreatedAt;
+
+SELECT name FROM sys.default_constraints WHERE parent_object_id = OBJECT_ID(N'dbo.Customers');`)}
+  ]}
+ ]},
+
+{id:'idx', l:'CREATE INDEX', g:1, d:'Indexes speed up reads. SQL Server 2025 adds JSON and vector indexes (preview).', c:[
+ {id:'idx.row', l:'CREATE INDEX (rowstore)', d:'A B-tree index on one or more key columns.',
+  t:'CREATE[[mod]] INDEX «name=IX_Orders_CustomerID_OrderDate»\n    ON «table=dbo.Orders» («keys=CustomerID, OrderDate DESC»)[[body]]',
+  ex:X(['Orders'],`CREATE NONCLUSTERED INDEX IX_Orders_CustomerID_OrderDate
+    ON dbo.Orders (CustomerID, OrderDate DESC)
+    INCLUDE (Status);
+
+-- This query can now seek on the index and needs no lookups
+SELECT o.OrderDate, o.Status
+FROM dbo.Orders AS o
+WHERE o.CustomerID = 1
+ORDER BY o.OrderDate DESC;`), c:[
+   {id:'idx.unique', l:'UNIQUE', s:'mod', p:' ', t:'UNIQUE', d:'Enforces unique key values.',
+    ex:X(['Customers'],`CREATE UNIQUE INDEX UX_Customers_Email
+    ON dbo.Customers (Email)
+    WHERE Email IS NOT NULL;      -- allows many NULL values
+
+BEGIN TRY
+    INSERT dbo.Customers (Name, City, Email) VALUES (N'Copycat', N'Boise', 'buyer@contoso.example');
+END TRY
+BEGIN CATCH
+    SELECT ERROR_MESSAGE() AS Rejected;
+END CATCH;`)},
+   {id:'idx.clustered', l:'CLUSTERED', s:'mod', p:' ', t:'CLUSTERED', d:'Sorts the table itself by the key. One per table.',
+    ex:X(['AuditLog'],`-- AuditLog has a clustered primary key, so create a heap copy to cluster
+SELECT * INTO #Log FROM dbo.AuditLog;
+CREATE CLUSTERED INDEX CX_Log_LoggedAt ON #Log (LoggedAt);
+SELECT name, type_desc FROM tempdb.sys.indexes WHERE object_id = OBJECT_ID(N'tempdb..#Log');
+DROP TABLE #Log;`)},
+   {id:'idx.nonclustered', l:'NONCLUSTERED', s:'mod', p:' ', t:'NONCLUSTERED', d:'A separate structure that points to the rows. This is the default.', ex:null},
+   {id:'idx.include', l:'INCLUDE (…)', p:'\n    ', t:'INCLUDE («columns=Status»)', d:'Non-key columns stored at the leaf level so a query can be answered from the index alone.', ex:null},
+   {id:'idx.where', l:'WHERE (filtered index)', p:'\n    ', t:"WHERE «predicate=Status = 'Pending'»", d:'Indexes only the rows that match, which keeps the index small.',
+    ex:X(['Orders'],`CREATE INDEX IX_Orders_Pending
+    ON dbo.Orders (OrderDate)
+    WHERE Status = 'Pending';
+
+SELECT o.OrderID, o.OrderDate
+FROM dbo.Orders AS o
+WHERE o.Status = 'Pending'
+ORDER BY o.OrderDate;`)},
+   {id:'idx.with', l:'WITH (options)', p:'\n    ', t:'WITH («options=DATA_COMPRESSION = PAGE, FILLFACTOR = 90»)', d:'Build options such as FILLFACTOR, DATA_COMPRESSION, SORT_IN_TEMPDB, ONLINE (Enterprise) or DROP_EXISTING.',
+    ex:X(['Orders'],`CREATE INDEX IX_Orders_OrderDate
+    ON dbo.Orders (OrderDate)
+    WITH (DATA_COMPRESSION = PAGE, FILLFACTOR = 90, SORT_IN_TEMPDB = ON);
+
+SELECT i.name, i.fill_factor
+FROM sys.indexes AS i
+WHERE i.object_id = OBJECT_ID(N'dbo.Orders');`)}
+ ]},
+ {id:'idx.cs', l:'CREATE COLUMNSTORE INDEX', d:'Column-oriented storage for fast scans and aggregates on large tables.',
+  t:'CREATE «clustering=NONCLUSTERED» COLUMNSTORE INDEX «name=NCCI_OrderLines»\n    ON «table=dbo.OrderLines» («columns=OrderID, ProductID, Qty, UnitPrice»)',
+  ex:X(['OrderLines'],`CREATE NONCLUSTERED COLUMNSTORE INDEX NCCI_OrderLines
+    ON dbo.OrderLines (OrderID, ProductID, Qty, UnitPrice);
+
+SELECT ol.ProductID, SUM(ol.Qty * ol.UnitPrice) AS Revenue
+FROM dbo.OrderLines AS ol
+GROUP BY ol.ProductID;`)},
+ {id:'idx.json', l:'CREATE JSON INDEX', v:'2025p', d:'Indexes paths inside a json column so JSON_VALUE, JSON_PATH_EXISTS and JSON_CONTAINS filters can seek. The table needs a clustered primary key.',
+  t:"CREATE JSON INDEX «name=JX_Tickets_Details»\n    ON «table=dbo.Tickets» («column=Details»)\n    FOR («paths='$.priority', '$.tags'»)",
+  ex:X(['Tickets'],`CREATE JSON INDEX JX_Tickets_Details
+    ON dbo.Tickets (Details)
+    FOR ('$.priority', '$.tags');
+
+SELECT t.TicketID, t.Subject
+FROM dbo.Tickets AS t
+WHERE JSON_VALUE(t.Details, '$.priority') = 'high';`)},
+ {id:'idx.vec', l:'CREATE VECTOR INDEX', v:'2025p', d:'Approximate nearest-neighbour (DiskANN) index on a vector column, used by VECTOR_SEARCH.',
+  t:"CREATE VECTOR INDEX «name=VX_Articles_Embedding»\n    ON «table=dbo.Articles» («column=Embedding»)\n    WITH (METRIC = «metric='cosine'», TYPE = 'diskann')",
+  ex:null}
+]},
+
+{id:'cv', l:'CREATE VIEW', batch:1, d:'Saves a SELECT as a named, queryable object. CREATE OR ALTER replaces it if it exists. It must be the only statement in its batch.',
+ t:'CREATE OR ALTER VIEW «name=dbo.vCustomerOrders»[[mod]]\nAS\n«query=SELECT c.CustomerID, c.Name, o.OrderID, o.OrderDate, o.Status\nFROM dbo.Customers AS c\nINNER JOIN dbo.Orders AS o ON o.CustomerID = c.CustomerID»[[opt]]',
+ ex:X(['Orders'],`CREATE OR ALTER VIEW dbo.vCustomerOrders
+AS
+SELECT c.CustomerID, c.Name, o.OrderID, o.OrderDate, o.Status
+FROM dbo.Customers AS c
+INNER JOIN dbo.Orders AS o ON o.CustomerID = c.CustomerID;
+GO
+
+SELECT * FROM dbo.vCustomerOrders WHERE Status = 'Pending';`),
+ c:[
+  {id:'cv.schemabinding', l:'WITH SCHEMABINDING', s:'mod', p:'\n', t:'WITH «options=SCHEMABINDING»', d:'Locks the referenced tables\' schema so they cannot change underneath the view. Needs two-part names and no SELECT *. Required for indexed views.',
+   ex:X(['Orders'],`CREATE OR ALTER VIEW dbo.vCustomerOrders
+WITH SCHEMABINDING
+AS
+SELECT c.CustomerID, c.Name, o.OrderID, o.OrderDate, o.Status
+FROM dbo.Customers AS c
+INNER JOIN dbo.Orders AS o ON o.CustomerID = c.CustomerID;
+GO
+
+BEGIN TRY
+    ALTER TABLE dbo.Orders DROP COLUMN Status;   -- blocked by the schema-bound view
+END TRY
+BEGIN CATCH
+    SELECT ERROR_MESSAGE() AS Blocked;
+END CATCH;`)},
+  {id:'cv.check', l:'WITH CHECK OPTION', s:'opt', p:'\n', t:'WITH CHECK OPTION', d:'Rejects inserts and updates through the view that would make a row fall outside its WHERE clause.',
+   ex:X(['Orders'],`CREATE OR ALTER VIEW dbo.vCustomerOrders
+AS
+SELECT o.OrderID, o.CustomerID, o.OrderDate, o.Status
+FROM dbo.Orders AS o
+WHERE o.Status = 'Pending'
+WITH CHECK OPTION;
+GO
+
+BEGIN TRY
+    UPDATE dbo.vCustomerOrders SET Status = 'Shipped' WHERE OrderID = 1003;  -- would leave the view
+END TRY
+BEGIN CATCH
+    SELECT ERROR_MESSAGE() AS Rejected;
+END CATCH;`)}
+ ]},
+
+{id:'cp', l:'CREATE PROCEDURE', batch:1, nosemi:1, d:'A saved, parameterised batch of T-SQL. CREATE OR ALTER replaces it if it exists.',
+ t:'CREATE OR ALTER PROCEDURE «name=dbo.usp_GetCustomerOrders»\n    «parameter=@CustomerID int»[[params]][[mod]]\nAS\nBEGIN\n    SET NOCOUNT ON;\n\n    «body=SELECT o.OrderID, o.OrderDate, o.Status\n    FROM dbo.Orders AS o\n    WHERE o.CustomerID = @CustomerID\n    ORDER BY o.OrderDate;»\nEND',
+ ex:X(['Orders'],`CREATE OR ALTER PROCEDURE dbo.usp_GetCustomerOrders
+    @CustomerID int
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT o.OrderID, o.OrderDate, o.Status
+    FROM dbo.Orders AS o
+    WHERE o.CustomerID = @CustomerID
+    ORDER BY o.OrderDate;
+END
+GO
+
+EXEC dbo.usp_GetCustomerOrders @CustomerID = 1;`),
+ c:[
+  {id:'cp.params', l:'Parameters', g:1, d:'More input or output parameters.', dflt:{s:'params', p:',\n    ', rep:1}, c:[
+    {id:'cp.param', l:'@param type = default', t:'«name=@Status» «type=varchar(20)» = «default=NULL»', d:'An optional input parameter with a default value.',
+     ex:X(['Orders'],`CREATE OR ALTER PROCEDURE dbo.usp_GetCustomerOrders
+    @CustomerID int,
+    @Status     varchar(20) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT o.OrderID, o.OrderDate, o.Status
+    FROM dbo.Orders AS o
+    WHERE o.CustomerID = @CustomerID
+      AND (@Status IS NULL OR o.Status = @Status);
+END
+GO
+
+EXEC dbo.usp_GetCustomerOrders @CustomerID = 1;
+EXEC dbo.usp_GetCustomerOrders @CustomerID = 1, @Status = 'Pending';`)},
+    {id:'cp.out', l:'@param type OUTPUT', t:'«name=@OrderCount» «type=int» OUTPUT', d:'Returns a value to the caller through a variable.',
+     ex:X(['Orders'],`CREATE OR ALTER PROCEDURE dbo.usp_CountOrders
+    @CustomerID int,
+    @OrderCount int OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT @OrderCount = COUNT(*) FROM dbo.Orders WHERE CustomerID = @CustomerID;
+END
+GO
+
+DECLARE @n int;
+EXEC dbo.usp_CountOrders @CustomerID = 1, @OrderCount = @n OUTPUT;
+SELECT @n AS OrderCount;`)},
+    {id:'cp.tvp', l:'@param table type READONLY', t:'«name=@OrderIds» «table_type=dbo.IdList» READONLY', d:'Passes a whole set of rows. Create the table type first with CREATE TYPE … AS TABLE.',
+     ex:X(['Orders'],`DROP PROCEDURE IF EXISTS dbo.usp_GetOrdersByIds;
+DROP TYPE IF EXISTS dbo.IdList;
+GO
+CREATE TYPE dbo.IdList AS TABLE (Id int PRIMARY KEY);
+GO
+CREATE PROCEDURE dbo.usp_GetOrdersByIds
+    @OrderIds dbo.IdList READONLY
+AS
+    SELECT o.* FROM dbo.Orders AS o
+    INNER JOIN @OrderIds AS ids ON ids.Id = o.OrderID;
+GO
+
+DECLARE @ids dbo.IdList;
+INSERT @ids VALUES (1001), (1004), (1008);
+EXEC dbo.usp_GetOrdersByIds @OrderIds = @ids;`)}
+  ]},
+  {id:'cp.with', l:'WITH (procedure options)', s:'mod', p:'\n', t:'WITH «options=EXECUTE AS OWNER»', d:'Options such as RECOMPILE, EXECUTE AS or ENCRYPTION.',
+   ex:X(['Orders'],`CREATE OR ALTER PROCEDURE dbo.usp_PendingOrders
+WITH RECOMPILE, EXECUTE AS OWNER
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT OrderID, OrderDate FROM dbo.Orders WHERE Status = 'Pending';
+END
+GO
+
+EXEC dbo.usp_PendingOrders;`)}
+ ]},
+
+{id:'cf', l:'CREATE FUNCTION', g:1, d:'User-defined functions return a value or a table and can be used inside queries.', c:[
+ {id:'cf.scalar', l:'Scalar function', batch:1, nosemi:1, d:'Returns one value. SQL Server can inline simple scalar functions into the calling query.',
+  t:'CREATE OR ALTER FUNCTION «name=dbo.fn_OrderTotal» («parameters=@OrderID int»)\nRETURNS «return_type=decimal(12,2)»[[mod]]\nAS\nBEGIN\n    «body=RETURN (\n        SELECT SUM(ol.Qty * ol.UnitPrice)\n        FROM dbo.OrderLines AS ol\n        WHERE ol.OrderID = @OrderID\n    );»\nEND',
+  ex:X(['OrderLines'],`CREATE OR ALTER FUNCTION dbo.fn_OrderTotal (@OrderID int)
+RETURNS decimal(12,2)
+AS
+BEGIN
+    RETURN (
+        SELECT SUM(ol.Qty * ol.UnitPrice)
+        FROM dbo.OrderLines AS ol
+        WHERE ol.OrderID = @OrderID
+    );
+END
+GO
+
+SELECT o.OrderID, o.Status, dbo.fn_OrderTotal(o.OrderID) AS Total
+FROM dbo.Orders AS o;`), c:[
+   {id:'cf.scalar.with', l:'WITH (function options)', s:'mod', p:'\n', t:'WITH «options=RETURNS NULL ON NULL INPUT»', d:'Options such as SCHEMABINDING, RETURNS NULL ON NULL INPUT or INLINE = ON.', ex:null}
+ ]},
+ {id:'cf.itvf', l:'Inline table-valued function', batch:1, d:'Returns the result of one SELECT, like a parameterised view. The optimizer expands it into the calling query.',
+  t:'CREATE OR ALTER FUNCTION «name=dbo.tvf_CustomerOrders» («parameters=@CustomerID int»)\nRETURNS TABLE[[mod]]\nAS\nRETURN\n(\n    «query=SELECT o.OrderID, o.OrderDate, o.Status\n    FROM dbo.Orders AS o\n    WHERE o.CustomerID = @CustomerID»\n)',
+  ex:X(['Orders'],`CREATE OR ALTER FUNCTION dbo.tvf_CustomerOrders (@CustomerID int)
+RETURNS TABLE
+AS
+RETURN
+(
+    SELECT o.OrderID, o.OrderDate, o.Status
+    FROM dbo.Orders AS o
+    WHERE o.CustomerID = @CustomerID
+);
+GO
+
+SELECT c.Name, x.OrderID, x.OrderDate
+FROM dbo.Customers AS c
+CROSS APPLY dbo.tvf_CustomerOrders(c.CustomerID) AS x;`), c:[
+   {id:'cf.itvf.with', l:'WITH SCHEMABINDING', s:'mod', p:'\n', t:'WITH SCHEMABINDING', d:'Binds the function to the schema of the objects it references.', ex:null}
+ ]}
+]},
+
+{id:'trg', l:'CREATE TRIGGER', batch:1, nosemi:1, d:'Code that runs automatically after (or instead of) INSERT, UPDATE or DELETE. The inserted and deleted pseudo-tables hold the affected rows.',
+ t:'CREATE OR ALTER TRIGGER «name=dbo.trg_Orders_Status»\nON «table=dbo.Orders»\n«timing=AFTER» «events=UPDATE»\nAS\nBEGIN\n    SET NOCOUNT ON;\n\n    «body=INSERT dbo.AuditLog (TableName, Operation, KeyValue, Detail)\n    SELECT \'Orders\', \'UPDATE\', CAST(i.OrderID AS nvarchar(100)),\n           CONCAT(d.Status, N\' -> \', i.Status)\n    FROM inserted AS i\n    INNER JOIN deleted AS d ON d.OrderID = i.OrderID\n    WHERE i.Status <> d.Status;»\nEND',
+ ex:X(['Orders','AuditLog'],`CREATE OR ALTER TRIGGER dbo.trg_Orders_Status
+ON dbo.Orders
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT dbo.AuditLog (TableName, Operation, KeyValue, Detail)
+    SELECT 'Orders', 'UPDATE', CAST(i.OrderID AS nvarchar(100)),
+           CONCAT(d.Status, N' -> ', i.Status)
+    FROM inserted AS i
+    INNER JOIN deleted AS d ON d.OrderID = i.OrderID
+    WHERE i.Status <> d.Status;
+END
+GO
+
+UPDATE dbo.Orders SET Status = 'Shipped' WHERE OrderID IN (1003, 1007);
+SELECT * FROM dbo.AuditLog;`)},
+
+{id:'trunc', l:'TRUNCATE TABLE', d:'Removes every row quickly with minimal logging and resets the identity seed. It fails if a foreign key references the table.',
+ t:'TRUNCATE TABLE «table=dbo.AuditLog»',
+ ex:X(['AuditLog'],`INSERT dbo.AuditLog (TableName, Operation) VALUES ('Demo', 'TEST'), ('Demo', 'TEST');
+SELECT * FROM dbo.AuditLog;
+
+TRUNCATE TABLE dbo.AuditLog;
+
+INSERT dbo.AuditLog (TableName, Operation) VALUES ('Demo', 'AFTER');
+SELECT LogID, Operation FROM dbo.AuditLog;      -- LogID starts again at 1`)},
+
+{id:'vars', l:'Variables', g:1, d:'Local variables and table variables. They live for the rest of the batch.', c:[
+ {id:'var.declare', l:'DECLARE @variable', d:'Declares one or more local variables, optionally with a starting value.',
+  t:'DECLARE «name=@CustomerID» «type=int» = «value=1»[[more]]',
+  ex:X(['Orders'],`DECLARE @CustomerID int  = 1,
+        @Since      date = '2025-02-01';
+
+SELECT o.OrderID, o.OrderDate
+FROM dbo.Orders AS o
+WHERE o.CustomerID = @CustomerID
+  AND o.OrderDate >= @Since;`), c:[
+   {id:'var.declare.more', l:'Another variable', s:'more', p:',\n        ', rep:1, t:"«name=@Since» «type=date» = «value='2025-02-01'»", d:'Declares another variable in the same statement.'}
+ ]},
+ {id:'var.table', l:'DECLARE @table TABLE', d:'A table variable: a small temporary table scoped to the batch.',
+  t:'DECLARE «name=@Recent» TABLE\n(\n    «columns=OrderID   int  PRIMARY KEY,\n    OrderDate date NOT NULL»\n)',
+  ex:X(['Orders'],`DECLARE @Recent TABLE
+(
+    OrderID   int  PRIMARY KEY,
+    OrderDate date NOT NULL
+);
+
+INSERT @Recent (OrderID, OrderDate)
+SELECT OrderID, OrderDate FROM dbo.Orders WHERE OrderDate >= '2025-05-01';
+
+SELECT * FROM @Recent;`)},
+ {id:'var.set', l:'SET @variable = …', d:'Assigns one value to one variable. A subquery must return a single value.',
+  t:'SET «variable=@CustomerID» = «value=(SELECT MIN(CustomerID) FROM dbo.Customers)»',
+  ex:X(['Customers'],`DECLARE @CustomerID int;
+SET @CustomerID = (SELECT MIN(CustomerID) FROM dbo.Customers WHERE City = N'Seattle');
+SELECT @CustomerID AS FirstSeattleCustomer;`)},
+ {id:'var.select', l:'SELECT @variable = …', d:'Assigns one or more variables from a query in one pass.',
+  t:'SELECT «assignments=@Total = SUM(ol.Qty * ol.UnitPrice), @Lines = COUNT(*)»\nFROM «source=dbo.OrderLines AS ol»',
+  ex:X(['OrderLines'],`DECLARE @Total decimal(12,2), @Lines int;
+
+SELECT @Total = SUM(ol.Qty * ol.UnitPrice),
+       @Lines = COUNT(*)
+FROM dbo.OrderLines AS ol;
+
+SELECT @Total AS Revenue, @Lines AS OrderLines;`)}
+]},
+
+{id:'flow', l:'Control flow', g:1, d:'Branching, loops, error handling and transactions.', c:[
+ {id:'flow.if', l:'IF … ELSE', nosemi:1, d:'Runs a block when a condition is true. Use BEGIN … END for more than one statement.',
+  t:"IF «condition=EXISTS (SELECT 1 FROM dbo.Orders WHERE Status = 'Pending')»\nBEGIN\n    «then=PRINT 'There are pending orders.';»\nEND[[else]]",
+  ex:X(['Orders'],`IF EXISTS (SELECT 1 FROM dbo.Orders WHERE Status = 'Pending')
+BEGIN
+    SELECT OrderID, OrderDate FROM dbo.Orders WHERE Status = 'Pending';
+END
+ELSE
+BEGIN
+    PRINT 'All caught up.';
+END;`), c:[
+   {id:'flow.else', l:'ELSE', s:'else', p:'\n', t:"ELSE\nBEGIN\n    «else=PRINT 'All caught up.';»\nEND", d:'Runs when the condition is false or unknown.'}
+ ]},
+ {id:'flow.while', l:'WHILE', nosemi:1, d:'Repeats a block while a condition is true. BREAK exits the loop and CONTINUE skips to the next pass.',
+  t:"WHILE «condition=@i <= 5»\nBEGIN\n    «body=PRINT CONCAT('Pass ', @i);\n    SET @i += 1;»[[ctl]]\nEND",
+  ex:X([],`DECLARE @i int = 1;
+
+WHILE @i <= 5
+BEGIN
+    IF @i = 4 BREAK;                 -- leave the loop early
+    PRINT CONCAT('Pass ', @i);
+    SET @i += 1;
+END;`), c:[
+   {id:'flow.break', l:'IF … BREAK', s:'ctl', p:'\n    ', rep:1, t:'IF «condition=@i = 4» BREAK;', d:'Leaves the loop when the condition is true.'},
+   {id:'flow.continue', l:'IF … CONTINUE', s:'ctl', p:'\n    ', rep:1, t:'IF «condition=@i % 2 = 0» CONTINUE;', d:'Skips to the next pass. Change the loop variable first so the loop still ends.'}
+ ]},
+ {id:'flow.try', l:'BEGIN TRY … CATCH', nosemi:1, d:'Error handling: an error in TRY jumps to CATCH, where ERROR_NUMBER(), ERROR_MESSAGE() and related functions describe it.',
+  t:'BEGIN TRY\n    «try=INSERT dbo.Orders (OrderID, CustomerID, OrderDate, Status)\n    VALUES (1001, 1, CURRENT_DATE, \'New\');»\nEND TRY\nBEGIN CATCH[[catch]]\n    «catch=SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_MESSAGE() AS ErrorMessage;»[[rethrow]]\nEND CATCH',
+  ex:X(['Orders'],`BEGIN TRY
+    BEGIN TRANSACTION;
+        INSERT dbo.Orders (OrderID, CustomerID, OrderDate, Status)
+        VALUES (1001, 1, CURRENT_DATE, 'New');          -- duplicate key: fails
+    COMMIT TRANSACTION;
+END TRY
+BEGIN CATCH
+    IF XACT_STATE() <> 0 ROLLBACK TRANSACTION;
+    SELECT ERROR_NUMBER()  AS ErrorNumber,
+           ERROR_LINE()    AS ErrorLine,
+           ERROR_MESSAGE() AS ErrorMessage;
+    -- THROW;   -- uncomment to re-raise to the caller
+END CATCH;`), c:[
+   {id:'flow.try.rollback', l:'Roll back open transaction', s:'catch', p:'\n    ', t:'IF XACT_STATE() <> 0 ROLLBACK TRANSACTION;', d:'Undoes work from a transaction the error left open.'},
+   {id:'flow.try.throw', l:'THROW; (re-raise)', s:'rethrow', p:'\n    ', t:'THROW;', d:'Passes the original error on to the caller after you have logged it.'}
+ ]},
+ {id:'flow.throw', l:'THROW', d:'Raises a custom error (number 50000 or higher) and stops the batch unless it is caught.',
+  t:"THROW «error_number=50001», «message=N'Order not found.'», «state=1»",
+  ex:X(['Orders'],`DECLARE @OrderID int = 9999;
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Orders WHERE OrderID = @OrderID)
+    THROW 50001, N'Order not found.', 1;`)},
+ {id:'flow.tran', l:'BEGIN TRANSACTION … COMMIT', nosemi:1, d:'Groups statements so they all succeed or all roll back. XACT_ABORT ON rolls back automatically on most errors.',
+  t:"SET XACT_ABORT ON;\nBEGIN TRANSACTION;\n    «statements=UPDATE dbo.Products SET Price = Price * 1.10 WHERE Category = N'Bikes';\n    INSERT dbo.AuditLog (TableName, Operation, Detail) VALUES ('Products', 'UPDATE', N'Bikes +10%');»[[save]]\nCOMMIT TRANSACTION;",
+  ex:X(['Products','AuditLog'],`SET XACT_ABORT ON;
+BEGIN TRANSACTION;
+    UPDATE dbo.Products SET Price = Price * 1.10 WHERE Category = N'Bikes';
+    INSERT dbo.AuditLog (TableName, Operation, Detail) VALUES ('Products', 'UPDATE', N'Bikes +10%');
+COMMIT TRANSACTION;
+
+SELECT Name, Price FROM dbo.Products WHERE Category = N'Bikes';
+SELECT * FROM dbo.AuditLog;`), c:[
+   {id:'flow.tran.save', l:'SAVE TRANSACTION + partial rollback', s:'save', p:'\n    ', ind:4, t:"SAVE TRANSACTION «savepoint=BeforeDiscount»;\n«risky_work=UPDATE dbo.Products SET Price = Price * 0.5;»\nROLLBACK TRANSACTION «rollback_to=BeforeDiscount»;", d:'Rolls back to a savepoint while the rest of the transaction carries on.',
+    ex:X(['Products'],`BEGIN TRANSACTION;
+    UPDATE dbo.Products SET Price = Price + 1 WHERE ProductID = 3;     -- kept
+    SAVE TRANSACTION BeforeDiscount;
+    UPDATE dbo.Products SET Price = Price * 0.5;                       -- undone
+    ROLLBACK TRANSACTION BeforeDiscount;
+COMMIT TRANSACTION;
+
+SELECT ProductID, Name, Price FROM dbo.Products;`)}
+ ]},
+ {id:'flow.exec', l:'EXEC procedure', d:'Runs a stored procedure with named or positional arguments.',
+  t:"EXEC «procedure=sp_help» «arguments=N'dbo.Customers'»",
+  ex:X(['Customers'],`EXEC sp_help N'dbo.Customers';
+
+-- Dynamic SQL with parameters (safe from SQL injection)
+EXEC sp_executesql
+    N'SELECT Name FROM dbo.Customers WHERE City = @City',
+    N'@City nvarchar(60)',
+    @City = N'Seattle';`)}
+]},
+
+{id:'fn', l:'Built-in functions', g:1, d:'Each function as a complete statement you can run. The same functions are under SELECT › Select-list expressions, and table-valued ones under SELECT › FROM.', c:fnCats('root')},
+
+{id:'ai', l:'AI & REST endpoints', v:'2025', g:1, d:'Call AI models and REST services from T-SQL, new in SQL Server 2025.', c:[
+ {id:'ai.model', l:'CREATE EXTERNAL MODEL', v:'2025p', d:'Registers an AI inference endpoint (Azure OpenAI, OpenAI, Ollama and others) so AI_GENERATE_EMBEDDINGS can call it.',
+  t:"CREATE EXTERNAL MODEL «name=MyEmbeddingModel»\nWITH (\n    LOCATION   = «location='https://<your-resource>.openai.azure.com/openai/deployments/text-embedding-3-small/embeddings?api-version=2024-02-01'»,\n    API_FORMAT = «api_format='Azure OpenAI'»,\n    MODEL_TYPE = EMBEDDINGS,\n    MODEL      = «model='text-embedding-3-small'»,\n    CREDENTIAL = «credential=[https://<your-resource>.openai.azure.com/]»\n)",
+  ex:null},
+ {id:'ai.rest', l:'sp_invoke_external_rest_endpoint', v:'2025', d:'Calls an HTTPS REST endpoint and returns the response as JSON. Enable it with sp_configure first.',
+  t:"DECLARE @response nvarchar(max);\nEXEC sp_invoke_external_rest_endpoint\n    @url      = «url=N'https://api.example.com/v1/status'»,\n    @method   = «method='GET'»,\n    @response = @response OUTPUT;\nSELECT @response AS Response",
+  ex:X([],`EXEC sp_configure 'external rest endpoint enabled', 1;
+RECONFIGURE WITH OVERRIDE;
+GO
+
+DECLARE @response nvarchar(max), @rc int;
+
+EXEC @rc = sp_invoke_external_rest_endpoint
+    @url      = N'https://api.example.com/v1/status',     -- replace with an HTTPS endpoint you trust
+    @method   = 'GET',
+    @headers  = N'{"Accept":"application/json"}',
+    @response = @response OUTPUT;
+
+SELECT @rc AS ReturnCode,
+       JSON_VALUE(@response, '$.response.status.http.code') AS HttpStatus,
+       JSON_QUERY(@response, '$.result')                    AS Body;`, {note:'This example calls an external web service. Replace the URL with an endpoint you control before you run it.'})}
+]}
+];
+/* Fill in examples that share another node's script */
+(function(){
+  const find=(arr,id)=>{for(const n of arr){if(n.id===id)return n; if(n.c){const r=find(n.c,id); if(r) return r;}} return null;};
+  const vs = FCATS.find(c=>c.id==='vec').f.find(f=>f.id==='vecsearch').ex;
+  find(TREE,'idx.vec').ex = vs;
+  find(TREE,'ai.model').ex = FCATS.find(c=>c.id==='vec').f.find(f=>f.id==='aiembed').ex;
+  find(TREE,'ct.opt.temporal').ex = find(TREE,'ct.col.period').ex;
+  find(TREE,'idx.nonclustered').ex = find(TREE,'idx.row').ex;
+  find(TREE,'idx.include').ex = find(TREE,'idx.row').ex;
+  find(TREE,'cf.scalar.with').ex = X(['OrderLines'],`CREATE OR ALTER FUNCTION dbo.fn_LineTotal (@Qty int, @UnitPrice decimal(10,2))
+RETURNS decimal(12,2)
+WITH RETURNS NULL ON NULL INPUT, SCHEMABINDING
+AS
+BEGIN
+    RETURN @Qty * @UnitPrice;
+END
+GO
+
+SELECT ol.OrderID, ol.LineNumber, dbo.fn_LineTotal(ol.Qty, ol.UnitPrice) AS LineTotal,
+       dbo.fn_LineTotal(NULL, ol.UnitPrice) AS NullInput
+FROM dbo.OrderLines AS ol;`);
+  find(TREE,'cf.itvf.with').ex = find(TREE,'cf.itvf').ex;
+})();
+
+/* ============================================================
+   Registry
+   ============================================================ */
+const DEFS = {};
+let ORD = 0;
+function parseT(t){
+  const out=[]; const re=/«([^=»]+)=([\s\S]*?)»|\[\[(\w+)\]\]/g; let last=0, m;
+  while((m=re.exec(t))){ if(m.index>last) out.push({x:t.slice(last,m.index)}); if(m[3]) out.push({slot:m[3]}); else out.push({k:m[1], def:m[2]}); last=re.lastIndex; }
+  if(last<t.length) out.push({x:t.slice(last)});
+  return out;
+}
+function reg(node, effParent, rawParent, inh){
+  for(const k of ['s','p','ind','rep']) if(node[k]===undefined && inh && inh[k]!==undefined) node[k]=inh[k];
+  node.ord = ORD++; node.parent = effParent; node.raw = rawParent;
+  if(node.t!==undefined && !node.g) node.tok = parseT(node.t);
+  if(DEFS[node.id]) console.warn('duplicate id', node.id);
+  DEFS[node.id] = node;
+  const childInh = node.g ? Object.assign({}, inh||{}, node.dflt||{}) : (node.dflt||{});
+  (node.c||[]).forEach(ch => reg(ch, node.g ? effParent : node.id, node.id, childInh));
+}
+TREE.forEach(n => reg(n, null, null, null));
+
+const rawChain = id => { const a=[]; for(let d=DEFS[id]; d; d=d.raw?DEFS[d.raw]:null) a.unshift(d.id); return a; };
+const effChain = id => { const a=[]; for(let d=DEFS[id]; d; d=d.parent?DEFS[d.parent]:null) a.unshift(d); return a; };
+
+/* ============================================================
+   Highlighting
+   ============================================================ */
+const KW = new Set(('ADD AFTER ALL ALTER AND ANY APPLY ARRAY AS ASC AT BEGIN BETWEEN BREAK BY CASCADE CASE CATCH CHECK CLUSTERED COLUMN COLUMNSTORE COMMIT CONSTRAINT CONTINUE CREATE CREDENTIAL CROSS CUBE CURRENT CURRENT_DATE DATABASE DECLARE DEFAULT DELAY DELETE DESC DISTINCT DROP ELSE END ENCRYPTION EXCEPT EXEC EXECUTE EXISTS EXTERNAL FETCH FILLFACTOR FOLLOWING FOR FOREIGN FROM FULL FUNCTION GENERATED GO GROUP GROUPING HAVING HIDDEN HOLDLOCK IDENTITY IF IN INCLUDE INCLUDE_NULL_VALUES INDEX INNER INPUT INSERT INTERSECT INTO IS JOIN KEY LEFT LIKE MASTER MATCHED MAXRECURSION MERGE MODEL NEXT NO NOCHECK NOCOUNT NONCLUSTERED NOT NULL OF OFFSET ON ONLY OPTION OR ORDER OUTER OUTPUT OVER OWNER PARTITION PASSWORD PATH PERCENT PERIOD PERSISTED PIVOT PRECEDING PRIMARY PRINT PROCEDURE READONLY RECOMPILE RECONFIGURE REFERENCES RETURN RETURNS RIGHT ROLLBACK ROLLUP ROOT ROW ROWS SAVE SCHEMABINDING SCOPED SELECT SET SETS SOURCE SYSTEM_TIME SYSTEM_VERSIONING TABLE TARGET THEN THROW TIES TOP TRAN TRANSACTION TRIGGER TRUNCATE TRY TYPE UNBOUNDED UNION UNIQUE UNPIVOT UPDATE USE USING VALUES VIEW WAITFOR WHEN WHERE WHILE WINDOW WITH WITHIN WITHOUT_ARRAY_WRAPPER WRAPPER XACT_ABORT XML ABSENT ALTER EMBEDDINGS ENCRYPTION OVERRIDE BY FIXED').split(' '));
+const TYPES = new Set('int bigint smallint tinyint bit decimal numeric money float real date datetime datetime2 datetimeoffset time char varchar nchar nvarchar text varbinary binary uniqueidentifier xml json vector sysname max'.split(' '));
+function esc(s){ return String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function hl(src){
+  const re=/(--[^\n]*)|(N?'(?:[^']|'')*')|(\[[^\]\n]*\])|(@@?[A-Za-z_]\w*|\$action)|(\b\d+(?:\.\d+)?\b)|([A-Za-z_#][\w]*)/g;
+  let out='', last=0, m;
+  while((m=re.exec(src))){
+    out += esc(src.slice(last, m.index)); last = re.lastIndex;
+    const t = esc(m[0]);
+    if(m[1]) out += `<span class="c">${t}</span>`;
+    else if(m[2]) out += `<span class="s">${t}</span>`;
+    else if(m[3]) out += t;
+    else if(m[4]) out += `<span class="v">${t}</span>`;
+    else if(m[5]) out += `<span class="n">${t}</span>`;
+    else {
+      const w = m[6], up = w.toUpperCase();
+      const isCall = /^\s*\(/.test(src.slice(re.lastIndex));
+      if(KW.has(up)) out += isCall && ['ROOT','PATH','CUBE','ROLLUP'].includes(up) ? `<span class="f">${t}</span>` : `<span class="k">${t}</span>`;
+      else if(TYPES.has(w.toLowerCase())) out += `<span class="ty">${t}</span>`;
+      else if(isCall) out += `<span class="f">${t}</span>`;
+      else out += t;
+    }
+  }
+  return out + esc(src.slice(last));
+}
+
+/* ============================================================
+   Badges
+   ============================================================ */
+function badge(v){
+  if(v==='2025') return '<span class="badge b-new">2025</span>';
+  if(v==='2025p') return '<span class="badge b-pv">2025 preview</span>';
+  if(v==='2022') return '<span class="badge b-old">2022</span>';
+  return '';
+}
+
+/* ============================================================
+   Builder state
+   ============================================================ */
+const STORE='tsql-syntax-builder-v1';
+let S = {roots:[], active:null, seq:1};
+function mk(defId){ const d=DEFS[defId]; const n={id:'n'+(S.seq++), d:defId, v:{}, k:[]}; (d.auto||[]).forEach(a=>n.k.push(mk(a))); return n; }
+function save(){ try{ localStorage.setItem(STORE, JSON.stringify(S)); }catch(e){} }
+function load(){
+  try{
+    const raw = localStorage.getItem(STORE); if(!raw) return false;
+    const s = JSON.parse(raw); if(!s || !Array.isArray(s.roots)) return false;
+    const clean = n => DEFS[n.d] ? Object.assign(n,{v:n.v||{}, k:(n.k||[]).map(clean).filter(Boolean)}) : null;
+    s.roots = s.roots.map(clean).filter(Boolean); S = s; return true;
+  }catch(e){ return false; }
+}
+function seed(){
+  S = {roots:[], active:null, seq:1};
+  const r = mk('sel'); r.v.columns = 'c.Name, o.OrderID, o.OrderDate, o.Status';
+  const from = mk('sel.from'); from.k.push(mk('sel.join.inner')); r.k.push(from);
+  const where = mk('sel.where'); const and = mk('sel.w.and'); and.v.condition = "o.Status <> 'Cancelled'"; where.k.push(and); r.k.push(where);
+  const ob = mk('sel.orderby'); ob.v.columns = 'c.Name, o.OrderDate DESC'; r.k.push(ob);
+  S.roots.push(r); S.active = r.id;
+}
+function findInst(id, list=S.roots, parent=null){
+  for(const n of list){ if(n.id===id) return {n, parent, list}; const r=findInst(id, n.k, n); if(r) return r; }
+  return null;
+}
+function rootOf(id){ for(const r of S.roots){ if(r.id===id || findInst(id, r.k)) return r; } return null; }
+
+function addNode(id){
+  const chain = effChain(id); const target = DEFS[id];
+  let cur=null, hit=null, created=false;
+  chain.forEach((d,i)=>{
+    const isT = i===chain.length-1;
+    if(!cur){
+      let r=null;
+      if(!isT) r = S.roots.find(x=>x.id===S.active && x.d===d.id) || [...S.roots].reverse().find(x=>x.d===d.id);
+      if(!r){ r = mk(d.id); S.roots.push(r); created = created || isT; }
+      cur = r; S.active = r.id; if(isT) hit = r;
+      return;
+    }
+    let ex = cur.k.find(x=>x.d===d.id);
+    if(isT){
+      if(ex && !d.rep){ hit = ex; return; }
+      if(DEFS[cur.d].excl){ const sl=d.s||'body'; cur.k = cur.k.filter(x=>(DEFS[x.d].s||'body')!==sl); }
+      const n = mk(d.id); cur.k.push(n); hit = n; created = true; return;
+    }
+    if(!ex){ ex = mk(d.id); cur.k.push(ex); }
+    cur = ex;
+  });
+  save(); renderBuilder();
+  flashInst(hit.id);
+  toast(created ? `Added ${target.l}` : `${target.l} is already in this statement. Edit its values below.`);
+}
+function removeInst(id){
+  const f = findInst(id); if(!f) return;
+  f.list.splice(f.list.indexOf(f.n),1);
+  if(S.active===id) S.active = S.roots.length ? S.roots[S.roots.length-1].id : null;
+  save(); renderBuilder();
+}
+function moveRoot(id, dir){
+  const i = S.roots.findIndex(r=>r.id===id), j=i+dir; if(i<0||j<0||j>=S.roots.length) return;
+  [S.roots[i],S.roots[j]] = [S.roots[j],S.roots[i]]; save(); renderBuilder();
+}
+
+/* Render an instance into segments: {x:text} or {x:text, ph:'inst|key'} */
+function rend(inst){
+  const d = DEFS[inst.d]; const out=[]; let hasBody=false;
+  for(const tk of d.tok){
+    if(tk.x!==undefined) out.push({x:tk.x});
+    else if(tk.k) out.push({x: inst.v[tk.k]!==undefined ? inst.v[tk.k] : tk.def, ph: inst.id+'|'+tk.k});
+    else { if(tk.slot==='body') hasBody=true; out.push(...slotSegs(inst, tk.slot)); }
+  }
+  if(!hasBody) out.push(...slotSegs(inst,'body'));
+  return out;
+}
+function slotSegs(inst, slot){
+  const kids = inst.k.filter(c=>(DEFS[c.d].s||'body')===slot).sort((a,b)=>DEFS[a.d].ord-DEFS[b.d].ord);
+  const out=[];
+  for(const c of kids){
+    const cd = DEFS[c.d];
+    if(!cd.t) continue;
+    out.push({x: cd.p!==undefined ? cd.p : '\n'});
+    let segs = rend(c);
+    if(cd.ind) segs = segs.map(s=>Object.assign({}, s, {x:s.x.replace(/\n/g, '\n'+' '.repeat(cd.ind))}));
+    out.push(...segs);
+  }
+  return out;
+}
+function scriptSegs(){
+  const all=[];
+  S.roots.forEach((r,i)=>{
+    const d = DEFS[r.d]; let segs = rend(r);
+    if(!d.nosemi) segs.push({x:';'});
+    if(d.batch){ if(i>0) segs.unshift({x:'GO\n'}); segs.push({x:'\nGO'}); }
+    if(i>0) all.push({x:'\n\n'});
+    all.push(...segs);
+  });
+  return all;
+}
+
+/* ============================================================
+   Example scripts
+   ============================================================ */
+function exampleFor(id){
+  let d = DEFS[id];
+  while(d && !d.ex) d = d.raw ? DEFS[d.raw] : null;
+  return d ? {src:d, ex:d.ex, inherited: d.id!==id} : null;
+}
+function buildExample(id){
+  const def = DEFS[id]; const found = exampleFor(id); if(!found) return null;
+  const {ex} = found;
+  const pv = def.v==='2025p' || found.src.v==='2025p' || ex.pv;
+  const need = new Set(); const add = t=>{ if(need.has(t)) return; TABLES[t].deps.forEach(add); need.add(t); };
+  (ex.tb||[]).forEach(add);
+  const drop = new Set();
+  TABLE_ORDER.forEach(t=>{ if(need.has(t) || TABLES[t].deps.some(x=>drop.has(x))) drop.add(t); });
+  const create = TABLE_ORDER.filter(t=>need.has(t));
+  const bar = '-- ' + '='.repeat(72);
+  const L = [];
+  L.push(bar, `-- ${def.l}`, `-- Example script for SQL Server 2025 (17.x), compatibility level 170.`, `-- Creates a scratch database named SyntaxLab. Run it in SSMS, VS Code or sqlcmd.`, bar, '');
+  L.push('-- 1. Scratch database', "IF DB_ID(N'SyntaxLab') IS NULL", '    CREATE DATABASE SyntaxLab;', 'GO', 'USE SyntaxLab;', 'GO', 'ALTER DATABASE CURRENT SET COMPATIBILITY_LEVEL = 170;');
+  if(pv) L.push('ALTER DATABASE SCOPED CONFIGURATION SET PREVIEW_FEATURES = ON;   -- this example uses a preview feature');
+  L.push('GO', '');
+  if(create.length){
+    L.push('-- 2. Supporting objects', '-- Remove objects left by earlier example runs');
+    BLOCKERS.forEach(b=>L.push(b));
+    TABLE_ORDER.slice().reverse().filter(t=>drop.has(t)).forEach(t=>L.push(`DROP TABLE IF EXISTS dbo.${t};`));
+    L.push('GO', '');
+    create.forEach(t=>{ L.push(TABLES[t].create, ''); });
+    L.push('GO', '');
+    const data = create.filter(t=>TABLES[t].data);
+    L.push('-- 3. Sample data');
+    if(data.length) data.forEach(t=>L.push(TABLES[t].data, ''));
+    else L.push('-- (tables start empty)', '');
+    L.push('GO', '');
+  } else {
+    L.push('-- 2. Supporting objects', '-- None needed: this example uses literals, variables or temporary objects.', '');
+  }
+  const setup = L.join('\n');
+  const F = [];
+  F.push(`-- ${create.length ? '4' : '3'}. The feature: ${def.l}${found.inherited ? '  (example for '+found.src.l+')' : ''}`);
+  if(def.v==='2025') F.push('-- New in SQL Server 2025.');
+  if(pv) F.push('-- Preview feature: requires PREVIEW_FEATURES = ON (set above).');
+  if(ex.note) wrapText(ex.note, 76).forEach(l=>F.push('-- '+l));
+  F.push(ex.q);
+  return {setup, feature:F.join('\n'), note:ex.note, pv, inherited:found.inherited, src:found.src};
+}
+function wrapText(s, n){ const w=s.split(' '), out=[]; let line=''; w.forEach(x=>{ if((line+' '+x).trim().length>n){ out.push(line.trim()); line=x; } else line+=' '+x; }); if(line.trim()) out.push(line.trim()); return out; }
+
+/* ============================================================
+   Explorer (cascading columns)
+   ============================================================ */
+const colsEl = document.getElementById('cols');
+const detailEl = document.getElementById('detail');
+let path = ['sel','sel.from'];
+let focusId = 'sel.from';
+let hoverTimer = null;
+
+function itemHTML(d, k, state){
+  const kids = d.c && d.c.length;
+  const canAdd = !!d.t && !d.g;
+  const hasEx = !!exampleFor(d.id) && !d.g;
+  return `<div class="it ${d.g?'grp':''} ${state}" role="treeitem" tabindex="-1" data-k="${k}" data-id="${esc(d.id)}" ${kids?'aria-expanded="'+(state?'true':'false')+'"':''}>
+    <span class="lbl">${esc(d.l)}</span>${badge(d.v)}
+    <span class="acts">${canAdd?`<button class="mini" data-add="${esc(d.id)}" title="Add to your syntax tree">+ Add</button>`:''}${hasEx?`<button class="mini" data-ex="${esc(d.id)}" title="Open an example script">Example</button>`:''}</span>
+    <span class="chev" aria-hidden="true">${kids?'›':''}</span></div>`;
+}
+function colHTML(k, items, title){
+  const sel = path[k];
+  const last = path.length-1;
+  return `<div class="col" data-k="${k}" role="group" aria-label="${esc(title)}"><div class="col-h">${esc(title)}</div>${items.map(d=>itemHTML(d,k, d.id===sel ? (k===last?'cur':'on') : '')).join('')}</div>`;
+}
+function renderCols(){
+  let h = colHTML(0, TREE, 'Statements');
+  path.forEach((id,k)=>{ const d=DEFS[id]; if(d.c && d.c.length) h += colHTML(k+1, d.c, d.l); });
+  colsEl.innerHTML = h;
+  requestAnimationFrame(()=>{ colsEl.scrollLeft = colsEl.scrollWidth; });
+}
+function setPath(k, id){
+  if(path[k]===id && path.length===k+1 && focusId===id) return;
+  path = path.slice(0,k).concat(id); focusId = id;
+  [...colsEl.children].forEach((col,i)=>{ if(i>k) col.remove(); });
+  colsEl.querySelectorAll('.col').forEach((col,i)=>{
+    col.querySelectorAll('.it').forEach(el=>{
+      el.classList.remove('on','cur');
+      if(el.dataset.id===path[i]) el.classList.add(i===path.length-1?'cur':'on');
+      if(el.hasAttribute('aria-expanded')) el.setAttribute('aria-expanded', el.dataset.id===path[i] ? 'true':'false');
+    });
+  });
+  const d = DEFS[id];
+  if(d.c && d.c.length){ colsEl.insertAdjacentHTML('beforeend', colHTML(k+1, d.c, d.l)); }
+  requestAnimationFrame(()=>{ colsEl.scrollLeft = colsEl.scrollWidth; });
+  renderDetail();
+}
+function navigateTo(id){
+  path = rawChain(id); focusId = id; renderCols(); renderDetail();
+}
+function synHTML(d){
+  if(!d.tok) return '';
+  let s=''; d.tok.forEach(tk=>{
+    if(tk.x!==undefined) s += hl(tk.x);
+    else if(tk.k) s += `<span class="ph-syn">‹${esc(tk.k)}›</span>`;
+  });
+  return s.replace(/\n\s*\n/g,'\n');
+}
+function renderDetail(){
+  const d = DEFS[focusId]; if(!d){ detailEl.innerHTML=''; return; }
+  const crumbs = rawChain(d.id).slice(0,-1).map(x=>esc(DEFS[x].l)).join(' › ');
+  const kids = (d.c||[]);
+  const chain = effChain(d.id);
+  const parent = chain.length>1 ? chain[chain.length-2] : null;
+  const where = !d.t ? '' : parent ? `Adds under <b>${esc(parent.l)}</b> in your active statement, creating it if needed.` : 'Adds a new statement to your syntax tree.';
+  const exInfo = exampleFor(d.id);
+  detailEl.innerHTML = `
+    ${crumbs?`<div class="crumb">${crumbs}</div>`:''}
+    <h3 class="${d.g?'grp':''}">${esc(d.l)} ${badge(d.v)}</h3>
+    <p>${esc(d.d||'')}</p>
+    ${d.t?`<div><div class="lab">Syntax</div><pre class="syn">${synHTML(d)}</pre></div>`:''}
+    ${kids.length?`<div><div class="lab">${kids.length} option${kids.length>1?'s':''} under this branch</div><div class="chips">${kids.map(c=>`<button class="chip" data-nav="${esc(c.id)}">${esc(c.l)}</button>`).join('')}</div></div>`:''}
+    <div class="row">
+      ${d.t?`<button class="btn pri" data-add="${esc(d.id)}">+ Add to syntax tree</button>`:''}
+      ${exInfo && !d.g?`<button class="btn" data-ex="${esc(d.id)}">View example script</button>`:''}
+    </div>
+    ${where?`<div class="where">${where}</div>`:''}`;
+}
+
+colsEl.addEventListener('mouseover', e=>{
+  const it = e.target.closest('.it'); if(!it || e.target.closest('.mini')) return;
+  clearTimeout(hoverTimer);
+  const k=+it.dataset.k, id=it.dataset.id;
+  hoverTimer = setTimeout(()=>setPath(k,id), 120);
+});
+colsEl.addEventListener('mouseleave', ()=>clearTimeout(hoverTimer));
+colsEl.addEventListener('click', e=>{
+  const a = e.target.closest('[data-add]'); if(a){ e.stopPropagation(); addNode(a.dataset.add); return; }
+  const x = e.target.closest('[data-ex]'); if(x){ e.stopPropagation(); openExample(x.dataset.ex); return; }
+  const it = e.target.closest('.it'); if(it){ clearTimeout(hoverTimer); setPath(+it.dataset.k, it.dataset.id); it.focus({preventScroll:true}); }
+});
+colsEl.addEventListener('dblclick', e=>{ const it=e.target.closest('.it'); if(it && DEFS[it.dataset.id].t && !DEFS[it.dataset.id].g) addNode(it.dataset.id); });
+colsEl.addEventListener('keydown', e=>{
+  const it = e.target.closest('.it'); if(!it) return;
+  const k=+it.dataset.k; const col = it.parentElement;
+  const items=[...col.querySelectorAll('.it')]; const i=items.indexOf(it);
+  const go = el=>{ if(!el) return; el.focus(); setPath(+el.dataset.k, el.dataset.id); };
+  if(e.key==='ArrowDown'){ e.preventDefault(); go(items[i+1]); }
+  else if(e.key==='ArrowUp'){ e.preventDefault(); go(items[i-1]); }
+  else if(e.key==='ArrowRight'){ e.preventDefault(); const next=colsEl.children[k+1]; if(next) go(next.querySelector('.it')); }
+  else if(e.key==='ArrowLeft'){ e.preventDefault(); const prev=colsEl.children[k-1]; if(prev) go(prev.querySelector('.it.on')||prev.querySelector('.it')); }
+  else if(e.key==='Enter'){ e.preventDefault(); const d=DEFS[it.dataset.id]; if(d.t && !d.g) addNode(d.id); }
+  else if(e.key==='e' || e.key==='E'){ if(exampleFor(it.dataset.id) && !DEFS[it.dataset.id].g) openExample(it.dataset.id); }
+});
+colsEl.addEventListener('focusin', e=>{ const it=e.target.closest('.it'); if(it && !it.classList.contains('on') && !it.classList.contains('cur')) setPath(+it.dataset.k, it.dataset.id); });
+detailEl.addEventListener('click', e=>{
+  const a=e.target.closest('[data-add]'); if(a) return addNode(a.dataset.add);
+  const x=e.target.closest('[data-ex]'); if(x) return openExample(x.dataset.ex);
+  const n=e.target.closest('[data-nav]'); if(n) return navigateTo(n.dataset.nav);
+});
+
+/* Search */
+const qEl = document.getElementById('q'), resEl = document.getElementById('results');
+const SEARCH = Object.values(DEFS).map(d=>({id:d.id, hay:(d.l+' '+(d.d||'')+' '+rawChain(d.id).map(x=>DEFS[x].l).join(' ')).toLowerCase()}));
+qEl.addEventListener('input', ()=>{
+  const q = qEl.value.trim().toLowerCase();
+  if(!q){ resEl.hidden = true; return; }
+  const terms = q.split(/\s+/);
+  const hits = SEARCH.filter(s=>terms.every(t=>s.hay.includes(t)))
+    .map(s=>({s, score:(DEFS[s.id].l.toLowerCase().includes(q)?0:1) + rawChain(s.id).length*0.01}))
+    .sort((a,b)=>a.score-b.score).slice(0,60);
+  resEl.innerHTML = hits.length ? hits.map(({s})=>{ const d=DEFS[s.id]; const p=rawChain(d.id).slice(0,-1).map(x=>esc(DEFS[x].l)).join(' › ');
+    return `<button class="res" data-nav="${esc(d.id)}"><span class="rl">${esc(d.l)} ${badge(d.v)}</span><span class="rp">${p||'Top level'}</span></button>`; }).join('')
+    : `<div class="empty-note">Nothing matches “${esc(qEl.value)}”. Try a keyword such as JOIN, JSON or OFFSET.</div>`;
+  resEl.hidden = false;
+});
+qEl.addEventListener('keydown', e=>{ if(e.key==='Escape'){ qEl.value=''; resEl.hidden=true; } if(e.key==='ArrowDown'){ const f=resEl.querySelector('.res'); if(f){ e.preventDefault(); f.focus(); } } });
+resEl.addEventListener('click', e=>{ const b=e.target.closest('[data-nav]'); if(!b) return; navigateTo(b.dataset.nav); qEl.value=''; resEl.hidden=true; const cur=colsEl.querySelector('.it.cur'); if(cur) cur.focus({preventScroll:true}); });
+resEl.addEventListener('keydown', e=>{ const b=e.target.closest('.res'); if(!b) return; if(e.key==='ArrowDown'){ e.preventDefault(); (b.nextElementSibling||b).focus(); } if(e.key==='ArrowUp'){ e.preventDefault(); (b.previousElementSibling||qEl).focus(); } if(e.key==='Escape'){ qEl.value=''; resEl.hidden=true; qEl.focus(); } });
+
+/* ============================================================
+   Builder rendering
+   ============================================================ */
+const outlineEl = document.getElementById('outline');
+const scriptEl = document.getElementById('script');
+const statEl = document.getElementById('stat');
+
+function nodeHTML(inst, isRoot, idx){
+  const d = DEFS[inst.d];
+  const fields = d.tok.filter(t=>t.k).map(t=>{
+    const val = inst.v[t.k]!==undefined ? inst.v[t.k] : t.def;
+    const rows = Math.min(10, Math.max(1, val.split('\n').length));
+    return `<label class="fld"><span class="fld-k">${esc(t.k.replace(/_/g,' '))}</span><textarea class="fld-v" id="f-${inst.id}-${esc(t.k)}" data-i="${inst.id}" data-k="${esc(t.k)}" rows="${rows}" spellcheck="false">${esc(val)}</textarea></label>`;
+  }).join('');
+  const kids = inst.k.slice().sort((a,b)=>DEFS[a.d].ord-DEFS[b.d].ord).map(c=>nodeHTML(c,false)).join('');
+  const hasKids = d.c && d.c.length;
+  const hasEx = !!exampleFor(d.id);
+  return `<div class="tn ${isRoot?'root':''} ${isRoot && S.active===inst.id?'active':''}" id="tn-${inst.id}" data-root="${isRoot?inst.id:''}">
+    <div class="tn-h">
+      <span class="nm">${isRoot?`<span class="num">Statement ${idx+1}</span>`:''}${esc(d.l)} ${badge(d.v)}</span>
+      ${hasKids?`<button class="btn sm ghost" data-browse="${esc(d.id)}" title="Show this branch's options in the explorer">Options</button>`:''}
+      ${hasEx?`<button class="btn sm ghost" data-ex="${esc(d.id)}">Example</button>`:''}
+      ${isRoot && S.roots.length>1?`<button class="btn sm ghost" data-up="${inst.id}" aria-label="Move statement up">↑</button><button class="btn sm ghost" data-down="${inst.id}" aria-label="Move statement down">↓</button>`:''}
+      <button class="btn sm ghost" data-rm="${inst.id}" aria-label="Remove ${esc(d.l)}">Remove</button>
+    </div>
+    ${fields?`<div class="fields">${fields}</div>`:''}
+    <div class="tn-kids">${kids}</div>
+  </div>`;
+}
+function renderOutline(){
+  outlineEl.innerHTML = S.roots.length ? S.roots.map((r,i)=>nodeHTML(r,true,i)).join('')
+    : `<div class="empty">Your syntax tree is empty. Hover a statement in the explorer above and press <b>+ Add</b>, or <button class="btn sm" data-sample>load the sample query</button>.</div>`;
+}
+function renderScript(){
+  const segs = scriptSegs();
+  if(!segs.length){ scriptEl.innerHTML = '<span class="c">-- Add a statement to generate T-SQL here.</span>'; statEl.textContent=''; return; }
+  scriptEl.innerHTML = segs.map(s=> s.ph ? `<span class="ph" data-ref="${esc(s.ph)}" title="Click to edit">${s.x ? hl(s.x) : '&nbsp;'}</span>` : hl(s.x)).join('');
+  const text = segs.map(s=>s.x).join('');
+  statEl.textContent = `${S.roots.length} statement${S.roots.length>1?'s':''} · ${text.split('\n').length} lines`;
+}
+function renderBuilder(){ renderOutline(); renderScript(); }
+function flashInst(id){
+  const el = document.getElementById('tn-'+id); if(!el) return;
+  el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  const r = el.getBoundingClientRect();
+  if(r.top > window.innerHeight || r.bottom < 0) el.scrollIntoView({block:'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+}
+
+outlineEl.addEventListener('input', e=>{
+  const ta = e.target.closest('.fld-v'); if(!ta) return;
+  const f = findInst(ta.dataset.i); if(!f) return;
+  f.n.v[ta.dataset.k] = ta.value;
+  ta.rows = Math.min(10, Math.max(1, ta.value.split('\n').length));
+  renderScript(); save();
+});
+outlineEl.addEventListener('focusin', e=>{
+  const root = e.target.closest('.tn.root'); if(!root) return;
+  const id = root.dataset.root; if(S.active!==id){ S.active=id; outlineEl.querySelectorAll('.tn.root').forEach(el=>el.classList.toggle('active', el.dataset.root===id)); save(); }
+});
+outlineEl.addEventListener('click', e=>{
+  const b = e.target.closest('button');
+  if(!b){ const root=e.target.closest('.tn.root'); if(root && S.active!==root.dataset.root){ S.active=root.dataset.root; outlineEl.querySelectorAll('.tn.root').forEach(el=>el.classList.toggle('active', el.dataset.root===S.active)); save(); } return; }
+  if(b.dataset.rm) return removeInst(b.dataset.rm);
+  if(b.dataset.ex) return openExample(b.dataset.ex);
+  if(b.dataset.up) return moveRoot(b.dataset.up,-1);
+  if(b.dataset.down) return moveRoot(b.dataset.down,1);
+  if(b.hasAttribute('data-sample')){ seed(); save(); renderBuilder(); return; }
+  if(b.dataset.browse){
+    const root=b.closest('.tn.root'); if(root){ S.active=root.dataset.root; save(); outlineEl.querySelectorAll('.tn.root').forEach(el=>el.classList.toggle('active', el.dataset.root===S.active)); }
+    navigateTo(b.dataset.browse);
+    document.querySelector('.explorer').scrollIntoView({block:'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+    const cur=colsEl.querySelector('.it.cur'); if(cur) cur.focus({preventScroll:true});
+  }
+});
+scriptEl.addEventListener('click', e=>{
+  const p = e.target.closest('.ph'); if(!p) return;
+  const [i,k] = p.dataset.ref.split('|');
+  const ta = document.getElementById(`f-${i}-${k}`);
+  if(ta){ ta.scrollIntoView({block:'center', behavior:'auto'}); ta.focus(); ta.select(); }
+});
+document.getElementById('clear').addEventListener('click', ()=>{ S={roots:[],active:null,seq:S.seq}; save(); renderBuilder(); toast('Cleared the syntax tree'); });
+document.getElementById('sample').addEventListener('click', ()=>{ seed(); save(); renderBuilder(); toast('Loaded the sample query'); });
+document.getElementById('copy').addEventListener('click', ()=>copyText(scriptSegs().map(s=>s.x).join(''), scriptEl));
+
+/* ============================================================
+   Example dialog
+   ============================================================ */
+const ov = document.getElementById('ov'), ovCode = document.getElementById('ovCode');
+let ovData = null, ovMode = 'full', lastFocus = null;
+function openExample(id){
+  const data = buildExample(id); if(!data) return;
+  const d = DEFS[id];
+  ovData = data; ovMode = 'full'; lastFocus = document.activeElement;
+  document.getElementById('ovTitle').innerHTML = `${esc(d.l)} ${badge(d.v)}`;
+  document.getElementById('ovDesc').textContent = d.d || '';
+  const notes = [];
+  if(data.inherited) notes.push(`This option shares the example for ${data.src.l}.`);
+  if(data.pv) notes.push('Uses a preview feature. The script turns on PREVIEW_FEATURES for the scratch database.');
+  if(data.note) notes.push(data.note);
+  document.getElementById('ovNote').innerHTML = notes.map(n=>`<div class="note">${esc(n)}</div>`).join('');
+  renderOv(); ov.hidden = false; document.getElementById('ovClose').focus();
+}
+function renderOv(){
+  document.getElementById('tabFull').setAttribute('aria-selected', ovMode==='full');
+  document.getElementById('tabFeat').setAttribute('aria-selected', ovMode==='feat');
+  ovCode.innerHTML = (ovMode==='full' ? hl(ovData.setup) + '\n' : '') + `<span class="feat">${hl(ovData.feature)}</span>`;
+  ovCode.scrollTop = 0;
+}
+function ovText(){ return ovMode==='full' ? ovData.setup + '\n' + ovData.feature : ovData.feature; }
+function closeOv(){ ov.hidden = true; if(lastFocus) lastFocus.focus({preventScroll:true}); }
+document.getElementById('ovClose').addEventListener('click', closeOv);
+ov.addEventListener('click', e=>{ if(e.target===ov) closeOv(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !ov.hidden) closeOv(); });
+document.getElementById('tabFull').addEventListener('click', ()=>{ ovMode='full'; renderOv(); });
+document.getElementById('tabFeat').addEventListener('click', ()=>{ ovMode='feat'; renderOv(); });
+document.getElementById('ovCopy').addEventListener('click', ()=>copyText(ovText(), ovCode));
+
+/* ============================================================
+   Utilities
+   ============================================================ */
+let toastTimer=null;
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.hidden=false; clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.hidden=true, 2200); }
+function copyText(text, el){
+  const fallback = ()=>{ const r=document.createRange(); r.selectNodeContents(el); const s=getSelection(); s.removeAllRanges(); s.addRange(r); toast('Selected. Press Ctrl+C (or ⌘C) to copy'); };
+  try{ navigator.clipboard.writeText(text).then(()=>toast('Copied to clipboard'), fallback); }catch(e){ fallback(); }
+}
+
+/* Boot */
+if(!load() || !S.roots) seed();
+renderCols(); renderDetail(); renderBuilder();
+</script>
